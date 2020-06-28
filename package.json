@@ -1,0 +1,24 @@
+{
+  "name": "clear-pipes",
+  "version": "1.0.0",
+  "description": "visualize dataa flow demo",
+  "main": "index.js",
+  "dependencies": {
+    "copy-to-clipboard": "^3.3.1",
+    "parcel": "^1.12.4"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.2"
+  },
+  "scripts": {
+    "start": "parcel develop index.html",
+    "build": "parcel build index.html  -d docs --public-url /clear-pipes/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaxBittker/clear-pipes.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {}
+}

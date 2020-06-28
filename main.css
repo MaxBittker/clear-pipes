@@ -1,0 +1,37 @@
+body {
+  font-family: "Libre Franklin", sans-serif;
+  background-size: 40px 40px;
+  background-image: radial-gradient(circle, #999 1px, rgba(0, 0, 0, 0) 1px);
+}
+* {
+  color: #333;
+}
+
+@keyframes flash {
+  0% {
+    filter: drop-shadow(1px 1px 0px rgb(107, 117, 147));
+    transform: translateY(0px);
+  }
+  10% {
+    filter: drop-shadow(1px 1px 15px rgb(107, 117, 147));
+    transform: translateY(-3px);
+  }
+  100% {
+    filter: drop-shadow(1px 1px 0px rgb(107, 117, 147));
+    transform: translateY(0px);
+  }
+}
+.flash {
+  animation: flash;
+  animation-duration: 400ms;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-out;
+}
+
+@media only screen and (max-width: 700px) {
+}
+.credit {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  text-shadow: white 0px 1px ;
