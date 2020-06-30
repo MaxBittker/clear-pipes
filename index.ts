@@ -1,15 +1,11 @@
-// import onePng from './assets/1.png';
+const textPath = document.querySelector("#text-path");
 
-import {} from "./src/render";
-import { editorRatio, tileSize } from "./src/state";
-import {} from "./src/utils";
+const h = document.documentElement,
+  b = document.body,
+  st = "scrollTop",
+  sh = "scrollHeight";
 
-let frame = <HTMLElement>document.getElementById("editor-frame");
-
-function updateFrameHeight() {
-  // frame.style.height = canvas.getBoundingClientRect().width + "px";
-}
-document.addEventListener("DOMContentLoaded", updateFrameHeight);
-window.addEventListener("resize", updateFrameHeight);
-
-frame.classList.toggle("selected");
+document.addEventListener("click", e => {
+  let percent = Math.random() * 100;
+  textPath.setAttribute("startOffset", (percent * 40 + 1200).toString());
+});
