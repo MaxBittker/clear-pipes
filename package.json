@@ -10,6 +10,7 @@
     "parcel": "^1.12.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "render": "^0.1.4",
     "two.js": "^0.7.0-stable.1"
   },
   "devDependencies": {
