@@ -191,26 +191,49 @@ L  ${p2.x} ${p2.y}
   let pathLength = path.getTotalLength();
 
   let textPath = document.getElementById("textpath" + id);
-  let offset = 0;
-  let updateOffset = () => {
-    offset += 1;
-    if (textPath) {
-      textPath.setAttribute("startOffset", `${offset}px`);
-    }
-    if (offset < pathLength) {
-      window.requestAnimationFrame(updateOffset);
-    } else {
-      console.log("done :)");
+  textPath.setAttribute(
+    "startOffset",
+    `${-textPath.getComputedTextLength()}px`
+  );
+
+  return {
+    sendWord(word, cb) {
+      textPath.textContent = word;
+      if (!textPath) {
+        throw new Error("no path");
+      }
+      let offset = -textPath.getComputedTextLength();
+      let updateOffset = () => {
+        if (!textPath) {
+          throw new Error("no path");
+        }
+        offset += 1;
+        textPath.setAttribute("startOffset", `${offset}px`);
+        if (offset < pathLength) {
+          window.requestAnimationFrame(updateOffset);
+        } else {
+          console.log("done :)");
+          cb();
+        }
+      };
+      updateOffset();
     }
   };
-  updateOffset();
 }
 
 let p1 = new Two.Vector(200, 200);
 let p2 = new Two.Vector(400, 450);
 let p3 = new Two.Vector(220, 650);
-makeConnector(p1, p2, "1");
-makeConnector(p2, p3, "2", true);
+let c1 = makeConnector(p1, p2, "1");
+let c2 = makeConnector(p2, p3, "2", true);
+let c3 = makeConnector(p3, p1, "3");
+
+let connections = [c1, c2, c3];
+c1.sendWord("wow", () => {
+  c2.sendWord("wow", () => {
+    c3.sendWord("wow", () => {});
+  });
+});
 
 makeBox(p1, 150, "a");
 makeBox(p2, 100, "b");
