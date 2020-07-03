@@ -19,37 +19,6 @@
     <div id="draw-animation"></div>
 
     <svg width="800" height="100%" viewBox="0 0 1000 1000">
-      <path
-        id="curve"
-        d="M 410 400
-    l 40 0
-    a 45 45, 0, 0, 1, 45, 45
-    l 0 40
-    a 45 45, 0, 0, 0, 45, 45
-    l 40 0
-    "
-        fill="transparent"
-      />
-      <text width="100%" style="transform:translate3d(0,0,0);">
-        <textPath
-          style="transform:translate3d(0,0,0);"
-          alignment-baseline="top"
-          xlink:href="#curve"
-          startOffset="00px"
-          id="text-path"
-        >
-          gobshite
-          <animate
-            attributeName="startOffset"
-            from="0%"
-            to="100%"
-            begin="0s"
-            dur="5s"
-            repeatCount="indefinite"
-          />
-        </textPath>
-      </text>
-
       <rect
         x="10"
         y="10"
@@ -70,23 +39,6 @@
         fill="white"
       />
 
-      <svg
-        width="100"
-        height="100"
-        x="350"
-        y="350"
-        viewBox="-50 -50 100 100"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-      >
-        <circle cx="5" cy="5" r="40" fill="lavender" stroke="black" />
-
-        <circle class="pinwheel" cx="0" cy="0" r="40" />
-        <line class="pinwheel" x1="-28.1" y1="-28.1" x2="28.1" y2="28.1"></line>
-        <line class="pinwheel" x1="28.1" y1="-28.1" x2="-28.1" y2="28.1"></line>
-        <line class="pinwheel" x1="-40" y1="0" x2="40" y2="0.0"></line>
-        <line class="pinwheel" x1="0" y1="-40" x2="0" y2="40"></line>
-      </svg>
       <foreignobject x="0" y="0" width="400px" height="400px">
         <body xmlns="http://www.w3.org/1999/xhtml">
           <div style="padding:20px; font-size:24px;">
@@ -101,33 +53,6 @@
           </div>
         </body>
       </foreignobject>
-      <g transform="translate(400,500)">
-        <rect
-          x="10"
-          y="10"
-          width="400px"
-          height="400px"
-          stroke="black"
-          fill="lavender"
-        />
-        <line x1="400" y1="400" x2="410" y2="410" stroke="black" />
-        <line x1="0" y1="400" x2="10" y2="410" stroke="black" />
-        <line x1="400" y1="0" x2="410" y2="10" stroke="black" />
-        <rect
-          x="0"
-          y="0"
-          width="400px"
-          height="400px"
-          stroke="black"
-          fill="white"
-        />
-
-        <foreignobject x="0" y="0" width="400px" height="400px">
-          <body xmlns="http://www.w3.org/1999/xhtml">
-            <div style="padding:20px; font-size:24px;"></div>
-          </body>
-        </foreignobject>
-      </g>
     </svg>
 
     <div class="credit" style="">

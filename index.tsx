@@ -4,15 +4,16 @@ import * as ReactDOMServer from "react-dom/server";
 
 // const textPath = document.querySelector("#text-path");
 
-var elem = document.getElementById("draw-animation");
+let elem = document.getElementById("draw-animation");
 
 let width = window.innerWidth;
 let height = window.innerHeight;
 
-var two = new Two({ fullscreen: true, autostart: true }).appendTo(elem);
+let two = new Two({ fullscreen: true, autostart: true }).appendTo(elem);
 console.log(two);
+
 function makeBox(pos, size: number, label: string) {
-  var rect1 = two.makeRectangle(size / 2, size / 2, size, size);
+  let rect1 = two.makeRectangle(size / 2, size / 2, size, size);
   let verts = [
     new Two.Anchor(size, 0),
     new Two.Anchor(size + 10, 10),
@@ -20,31 +21,71 @@ function makeBox(pos, size: number, label: string) {
     new Two.Anchor(10, size + 10),
     new Two.Anchor(0, size)
   ];
-  var path = two.makePath(verts, true);
-  var line = two.makeLine(size, size, size + 10, size + 10);
+  let path = two.makePath(verts, true);
+  let line = two.makeLine(size, size, size + 10, size + 10);
 
   path.fill = "lavender";
   rect1.fill = "white";
 
-  var group = two.makeGroup(path, rect1, line);
+  let group = two.makeGroup(path, rect1, line);
   two.update();
 
-  var svgElem = group._renderer.elem;
-
+  let r = 25;
   const htmlString = ReactDOMServer.renderToStaticMarkup(
-    <foreignobject x="10" y="10" width="100" height="100">
-      <h1>{label}</h1>
-    </foreignobject>
+    <React.Fragment>
+      <foreignobject x="10" y="10" width="100" height="100">
+        <h1>{label}</h1>
+      </foreignobject>
+      <svg
+        width={r * 2}
+        height={r * 2}
+        x={size - r}
+        y={size - r}
+        viewBox={`${-r} ${-r} ${2 * r} ${2 * r}`}
+        $
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+      >
+        <circle cx="5" cy="5" r={`${r * 0.8}`} fill="lavender" stroke="black" />
+
+        <circle className="pinwheel" cx="0" cy="0" r={`${r * 0.8}`} />
+        <line
+          className="pinwheel"
+          x1={r * -0.8 * Math.SQRT1_2}
+          y1={r * -0.8 * Math.SQRT1_2}
+          x2={r * 0.8 * Math.SQRT1_2}
+          y2={r * 0.8 * Math.SQRT1_2}
+        ></line>
+        <line
+          className="pinwheel"
+          x1={r * 0.8 * Math.SQRT1_2}
+          y1={r * -0.8 * Math.SQRT1_2}
+          x2={r * -0.8 * Math.SQRT1_2}
+          y2={r * 0.8 * Math.SQRT1_2}
+        ></line>
+        <line
+          className="pinwheel"
+          x1={`${r * -0.8}`}
+          y1="0"
+          x2={`${r * 0.8}`}
+          y2="0.0"
+        ></line>
+        <line
+          className="pinwheel"
+          x1="0"
+          y1={`${r * -0.8}`}
+          x2="0"
+          y2={`${r * 0.8}`}
+        ></line>
+      </svg>
+    </React.Fragment>
   );
+  let svgElem = group._renderer.elem;
 
   svgElem.innerHTML += htmlString;
 
   group.translation.set(pos.x, pos.y);
 }
-
-let a = new Two.Vector(20, 20);
-let b = new Two.Vector(320, 220);
-let c = new Two.Vector(30, 420);
 
 function makePath(a, b) {
   // console.log(a);
@@ -52,6 +93,7 @@ function makePath(a, b) {
   two.makeLine(a.x, a.y, mid.x, mid.y);
   two.makeLine(mid.x, mid.y, b.x, b.y);
 }
+
 let half = new Two.Vector(100, 100);
 
 let lastPoint = new Two.Vector(
@@ -62,21 +104,82 @@ let size = 200;
 let points = [
   new Two.Vector(Math.random() * two.width, Math.random() * two.height)
 ];
-for (var i = 0; i < 8; i++) {
+
+function makeConnector(p1, p2, id) {
+  let path = makePath(p1, p2);
+
+  let group = two.makeGroup(path);
+  two.update();
+  let rx = 45;
+  let ry = 45;
+  let sweep = 0;
+
+  if (p2.x < p1.x) {
+    rx *= -1;
+    sweep = 1 - sweep;
+  }
+  if (p2.y > p1.y) {
+    ry *= -1;
+    sweep = 1 - sweep;
+  }
+  const htmlString = ReactDOMServer.renderToStaticMarkup(
+    <React.Fragment>
+      <path
+        id={id}
+        d={`M ${p1.x} ${p1.y}
+L  ${p2.x - rx} ${p1.y}
+A 45, 45, 0, 0, ${sweep}, ${p2.x} ${p1.y - ry}
+L  ${p2.x} ${p2.y}
+`}
+        stroke="blue"
+        fill="transparent"
+      />
+
+      <text width="100%">
+        <textpath href={"#" + id} startOffset="00px" id="text-path">
+          gobshite
+          <animate
+            attributeName="startOffset"
+            from="0%"
+            to="100%"
+            begin="0s"
+            dur="5s"
+            repeatCount="indefinite"
+          />
+        </textpath>
+      </text>
+    </React.Fragment>
+  );
+  let svgElem = group._renderer.elem;
+
+  svgElem.innerHTML += htmlString;
+}
+for (let i = 0; i < 5; i++) {
+  let p2 = points[points.length - 1];
+
   let p = new Two.Vector(
     size + Math.random() * (two.width - size * 3),
     size + Math.random() * (two.height - size * 3)
   );
-  makePath(
-    Two.Vector.add(p, half),
-    Two.Vector.add(points[points.length - 1], half)
-  );
-
+  // if(
   points.push(p);
+  let id = "curve" + i;
+
+  makeConnector(Two.Vector.add(p, half), Two.Vector.add(p2, half), id);
+  makeBox(p, 100, i.toString());
 }
-points.forEach((p, i) => {
-  makeBox(p, 200, i.toString());
-});
+
+points.forEach((p, i) => {});
+// let base = new Two.Vector(width / 2, height / 2);
+
+// let p1 = Two.Vector.add(new Two.Vector(size * 1, size * 1), base);
+// let p2 = Two.Vector.add(new Two.Vector(-size * 1, -size * 1), base);
+// let p3 = Two.Vector.add(new Two.Vector(size * 1, -size * 1), base);
+// let p4 = Two.Vector.add(new Two.Vector(-size * 1, size * 1), base);
+// makeConnector(p1, p2, "a");
+// makeConnector(p2, p1, "b");
+// makeConnector(p3, p4, "c");
+// makeConnector(p4, p3, "d");
 // makePath(Two.Vector.add(a, half), Two.Vector.add(b, half));
 // makePath(Two.Vector.add(b, half), Two.Vector.add(c, half));
 // makeBox(a, 200, "a");
@@ -92,7 +195,7 @@ two
     // if (group.scale > 0.9999) {
     // group.scale = group.rotation = 0;
     // }
-    // var t = (1 - group.scale) * 0.125;
+    // let t = (1 - group.scale) * 0.125;
     // group.scale += t;
     // group.rotation += t * 4 * Math.PI;
   })
