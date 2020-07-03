@@ -2,15 +2,21 @@ import Two from "two.js";
 import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
 
-// const textPath = document.querySelector("#text-path");
-
 let elem = document.getElementById("draw-animation");
 
 let width = window.innerWidth;
 let height = window.innerHeight;
 
 let two = new Two({ fullscreen: true, autostart: true }).appendTo(elem);
-console.log(two);
+
+let text = ` After describing a fairy-tale existence with various cute marine
+mammals forever frolicking on and around her small wooden dock, she
+added, with faux causticness, that the seals “look like big
+Rottweilers swimming around.” After declaring optimistically, “I
+think I have a lot to say that might be interesting to people,” she
+did an abrupt volte-face, switching to a low, confessional timbre:
+“Who knows? Who knows, right, what I’m doing? I don’t know. Maybe no
+one will be interested.`;
 
 function makeBox(pos, size: number, label: string) {
   let rect1 = two.makeRectangle(size / 2, size / 2, size, size);
@@ -45,7 +51,13 @@ function makeBox(pos, size: number, label: string) {
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
       >
-        <circle cx="5" cy="5" r={`${r * 0.8}`} fill="lavender" stroke="black" />
+        <circle
+          cx={r * 0.15}
+          cy={r * 0.15}
+          r={`${r * 0.8}`}
+          fill="lavender"
+          stroke="black"
+        />
 
         <circle className="pinwheel" cx="0" cy="0" r={`${r * 0.8}`} />
         <line
@@ -83,7 +95,7 @@ function makeBox(pos, size: number, label: string) {
 
   svgElem.innerHTML += htmlString;
 
-  group.translation.set(pos.x, pos.y);
+  group.translation.set(pos.x - size / 2, pos.y - size / 2);
 }
 
 function makePath(a, b) {
@@ -99,47 +111,68 @@ let points = [
   new Two.Vector(Math.random() * two.width, Math.random() * two.height)
 ];
 
-function makeConnector(p1, p2, id) {
-  let path = makePath(p1, p2);
+function makeConnector(p1, p2, id, flip = false) {
+  // let path = makePath(p1, p2);
 
-  let group = two.makeGroup(path);
+  let group = two.makeGroup();
   two.update();
   let rx = 45;
   let ry = 45;
   let sweep = 0;
-
+  let rotate = 0;
   if (p2.x < p1.x) {
     rx *= -1;
     sweep = 1 - sweep;
+    rotate = 180;
   }
   if (p2.y > p1.y) {
     ry *= -1;
     sweep = 1 - sweep;
   }
   let length = Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+
+  let pM = new Two.Vector(p2.x, p1.y);
+  let xFirst = 1;
+  let yFirst = 0;
+  if (flip) {
+    pM = new Two.Vector(p1.x, p2.y);
+    rx *= -1;
+    ry *= -1;
+    xFirst = 0;
+    yFirst = 1;
+    sweep = 1 - sweep;
+  }
+
+  let word = "gobshite";
+  if (rotate > 0) {
+    word = word
+      .split("")
+      .reverse()
+      .join("");
+  }
   const htmlString = ReactDOMServer.renderToStaticMarkup(
     <React.Fragment>
       <path
         id={id}
         d={`M ${p1.x} ${p1.y}
-L  ${p2.x - rx} ${p1.y}
-A 45, 45, 0, 0, ${sweep}, ${p2.x} ${p1.y - ry}
+L  ${pM.x - rx * xFirst} ${pM.y - ry * yFirst}
+A 45, 45, 0, 0, ${sweep}, ${pM.x - rx * yFirst} ${pM.y - ry * xFirst}
 L  ${p2.x} ${p2.y}
 `}
         stroke="blue"
         fill="transparent"
       />
 
-      <text width="100%">
+      <text width="100%" rotate={rotate + "deg"}>
         <textpath href={"#" + id} startOffset="00px" id="text-path">
-          gobshite
+          {word}
           <animate
             attributeName="startOffset"
             from="0%"
             to="100%"
             begin="0s"
             dur={`${length / 50}s`}
-            repeatCount="indefinite"
+            repeatCount="1"
           />
         </textpath>
       </text>
@@ -149,23 +182,34 @@ L  ${p2.x} ${p2.y}
 
   svgElem.innerHTML += htmlString;
 }
-for (let i = 0; i < 5; i++) {
-  let p2 = points[points.length - 1];
 
-  let p = new Two.Vector(
-    size + Math.random() * (two.width - size * 3),
-    size + Math.random() * (two.height - size * 3)
-  );
+let p1 = new Two.Vector(200, 200);
+let p2 = new Two.Vector(400, 450);
+let p3 = new Two.Vector(220, 650);
+makeConnector(p1, p2, "1");
+makeConnector(p2, p3, "2");
 
-  points.push(p);
-  let id = "curve" + i;
+makeBox(p1, 150, "a");
+makeBox(p2, 100, "b");
+makeBox(p3, 150, "c");
 
-  makeConnector(Two.Vector.add(p, half), Two.Vector.add(p2, half), id);
-  makeBox(p, 100, i.toString());
-  makeBox(p2, 100, (i + 1).toString());
-}
+// for (let i = 0; i < 5; i++) {
+//   let p2 = points[points.length - 1];
 
-points.forEach((p, i) => {});
+//   let p = new Two.Vector(
+//     size + Math.random() * (two.width - size * 3),
+//     size + Math.random() * (two.height - size * 3)
+//   );
+
+//   points.push(p);
+//   let id = "curve" + i;
+
+//   makeConnector(Two.Vector.add(p, half), Two.Vector.add(p2, half), id);
+//   makeBox(p, 100, i.toString());
+//   makeBox(p2, 100, (i + 1).toString());
+// }
+
+// points.forEach((p, i) => {});
 
 two
   .bind("update", function(frameCount) {
