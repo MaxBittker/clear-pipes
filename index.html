@@ -16,6 +16,8 @@
   <link rel="stylesheet" type="text/css" href="./main.css" />
 
   <body>
+    <div id="draw-animation"></div>
+
     <svg width="800" height="100%" viewBox="0 0 1000 1000">
       <path
         id="curve"
@@ -82,7 +84,7 @@
         <circle class="pinwheel" cx="0" cy="0" r="40" />
         <line class="pinwheel" x1="-28.1" y1="-28.1" x2="28.1" y2="28.1"></line>
         <line class="pinwheel" x1="28.1" y1="-28.1" x2="-28.1" y2="28.1"></line>
-        <line class="pinwheel" x1="-40" y1="" x2="40" y2="0"></line>
+        <line class="pinwheel" x1="-40" y1="0" x2="40" y2="0.0"></line>
         <line class="pinwheel" x1="0" y1="-40" x2="0" y2="40"></line>
       </svg>
       <foreignobject x="0" y="0" width="400px" height="400px">
@@ -146,5 +148,5 @@
       dsn: "https://2931714e46114cae86d120374a907c98@sentry.io/3420291"
     });
   </script> -->
-  <script src="./index.ts"></script>
+  <script src="./index.tsx"></script>
 </html>
