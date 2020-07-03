@@ -153,7 +153,7 @@ function makeConnector(p1, p2, id, flip = false) {
   const htmlString = ReactDOMServer.renderToStaticMarkup(
     <React.Fragment>
       <path
-        class="textpath"
+        className="textpath"
         id={id}
         d={`M ${p1.x} ${p1.y}
 L  ${pM.x - rx * xFirst} ${pM.y - ry * yFirst}
@@ -167,18 +167,18 @@ L  ${p2.x} ${p2.y}
         <textPath
           href={"#" + id}
           startOffset="00px"
-          id="text-path"
+          id={"textpath" + id}
           alignmentBaseline="middle"
         >
           {word}
-          <animate
+          {/* <animate
             attributeName="startOffset"
             from="0%"
             to="100%"
             begin="0s"
             dur={`${length / 50}s`}
             repeatCount="indefinite"
-          />
+          /> */}
         </textPath>
       </text>
     </React.Fragment>
@@ -186,6 +186,24 @@ L  ${p2.x} ${p2.y}
   let svgElem = group._renderer.elem;
 
   svgElem.innerHTML += htmlString;
+
+  let path = document.getElementById(id);
+  let pathLength = path.getTotalLength();
+
+  let textPath = document.getElementById("textpath" + id);
+  let offset = 0;
+  let updateOffset = () => {
+    offset += 1;
+    if (textPath) {
+      textPath.setAttribute("startOffset", `${offset}px`);
+    }
+    if (offset < pathLength) {
+      window.requestAnimationFrame(updateOffset);
+    } else {
+      console.log("done :)");
+    }
+  };
+  updateOffset();
 }
 
 let p1 = new Two.Vector(200, 200);
@@ -198,23 +216,25 @@ makeBox(p1, 150, "a");
 makeBox(p2, 100, "b");
 makeBox(p3, 150, "c");
 
-// for (let i = 0; i < 5; i++) {
-//   let p2 = points[points.length - 1];
+for (let i = 0; i < 3; i++) {
+  let p2 = points[points.length - 1];
 
-//   let p = new Two.Vector(
-//     size + Math.random() * (two.width - size * 3),
-//     size + Math.random() * (two.height - size * 3)
-//   );
+  let p = new Two.Vector(
+    size + Math.random() * (two.width - size * 3),
+    size + Math.random() * (two.height - size * 3)
+  );
 
-//   points.push(p);
-//   let id = "curve" + i;
+  points.push(p);
+  let id = "curve" + i;
 
-//   makeConnector(Two.Vector.add(p, half), Two.Vector.add(p2, half), id);
-//   makeBox(p, 100, i.toString());
-//   makeBox(p2, 100, (i + 1).toString());
-// }
+  // makeConnector(Two.Vector.add(p, half), Two.Vector.add(p2, half), id);
+  // makeBox(p, 100, i.toString());
+  // makeBox(p2, 100, (i + 1).toString());
+}
 
-// points.forEach((p, i) => {});
+points.forEach((p, i) => {
+  // makeBox(p, 100, i.toString());
+});
 
 two
   .bind("update", function(frameCount) {
