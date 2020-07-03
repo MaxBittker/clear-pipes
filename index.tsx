@@ -153,18 +153,23 @@ function makeConnector(p1, p2, id, flip = false) {
   const htmlString = ReactDOMServer.renderToStaticMarkup(
     <React.Fragment>
       <path
+        class="textpath"
         id={id}
         d={`M ${p1.x} ${p1.y}
 L  ${pM.x - rx * xFirst} ${pM.y - ry * yFirst}
 A 45, 45, 0, 0, ${sweep}, ${pM.x - rx * yFirst} ${pM.y - ry * xFirst}
 L  ${p2.x} ${p2.y}
 `}
-        stroke="blue"
         fill="transparent"
       />
 
-      <text width="100%" rotate={rotate + "deg"}>
-        <textpath href={"#" + id} startOffset="00px" id="text-path">
+      <text width="100%" rotate={rotate}>
+        <textPath
+          href={"#" + id}
+          startOffset="00px"
+          id="text-path"
+          alignmentBaseline="middle"
+        >
           {word}
           <animate
             attributeName="startOffset"
@@ -172,9 +177,9 @@ L  ${p2.x} ${p2.y}
             to="100%"
             begin="0s"
             dur={`${length / 50}s`}
-            repeatCount="1"
+            repeatCount="indefinite"
           />
-        </textpath>
+        </textPath>
       </text>
     </React.Fragment>
   );
@@ -187,7 +192,7 @@ let p1 = new Two.Vector(200, 200);
 let p2 = new Two.Vector(400, 450);
 let p3 = new Two.Vector(220, 650);
 makeConnector(p1, p2, "1");
-makeConnector(p2, p3, "2");
+makeConnector(p2, p3, "2", true);
 
 makeBox(p1, 150, "a");
 makeBox(p2, 100, "b");

@@ -21,9 +21,13 @@ path {
   /* stroke-width: 40px; */
   /* stroke:red; */
 }
+.textpath {
+  stroke-width: 30px;
+  stroke: rgba(0, 0, 200, 0.05);
+}
 textPath {
   /* font-size: 0.4em; */
-  letter-spacing: 0.2em;
+  letter-spacing: 0.1em;
 }
 h1 {
   font-size: 25px;
