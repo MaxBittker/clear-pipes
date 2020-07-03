@@ -42,7 +42,6 @@ function makeBox(pos, size: number, label: string) {
         x={size - r}
         y={size - r}
         viewBox={`${-r} ${-r} ${2 * r} ${2 * r}`}
-        $
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
       >
@@ -88,7 +87,6 @@ function makeBox(pos, size: number, label: string) {
 }
 
 function makePath(a, b) {
-  // console.log(a);
   let mid = new Two.Vector(a.x, b.y);
   two.makeLine(a.x, a.y, mid.x, mid.y);
   two.makeLine(mid.x, mid.y, b.x, b.y);
@@ -96,10 +94,6 @@ function makePath(a, b) {
 
 let half = new Two.Vector(100, 100);
 
-let lastPoint = new Two.Vector(
-  Math.random() * Two.width,
-  Math.random() * Two.height
-);
 let size = 200;
 let points = [
   new Two.Vector(Math.random() * two.width, Math.random() * two.height)
@@ -122,6 +116,7 @@ function makeConnector(p1, p2, id) {
     ry *= -1;
     sweep = 1 - sweep;
   }
+  let length = Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
   const htmlString = ReactDOMServer.renderToStaticMarkup(
     <React.Fragment>
       <path
@@ -143,7 +138,7 @@ L  ${p2.x} ${p2.y}
             from="0%"
             to="100%"
             begin="0s"
-            dur="5s"
+            dur={`${length / 50}s`}
             repeatCount="indefinite"
           />
         </textpath>
@@ -161,32 +156,16 @@ for (let i = 0; i < 5; i++) {
     size + Math.random() * (two.width - size * 3),
     size + Math.random() * (two.height - size * 3)
   );
-  // if(
+
   points.push(p);
   let id = "curve" + i;
 
   makeConnector(Two.Vector.add(p, half), Two.Vector.add(p2, half), id);
   makeBox(p, 100, i.toString());
+  makeBox(p2, 100, (i + 1).toString());
 }
 
 points.forEach((p, i) => {});
-// let base = new Two.Vector(width / 2, height / 2);
-
-// let p1 = Two.Vector.add(new Two.Vector(size * 1, size * 1), base);
-// let p2 = Two.Vector.add(new Two.Vector(-size * 1, -size * 1), base);
-// let p3 = Two.Vector.add(new Two.Vector(size * 1, -size * 1), base);
-// let p4 = Two.Vector.add(new Two.Vector(-size * 1, size * 1), base);
-// makeConnector(p1, p2, "a");
-// makeConnector(p2, p1, "b");
-// makeConnector(p3, p4, "c");
-// makeConnector(p4, p3, "d");
-// makePath(Two.Vector.add(a, half), Two.Vector.add(b, half));
-// makePath(Two.Vector.add(b, half), Two.Vector.add(c, half));
-// makeBox(a, 200, "a");
-// makeBox(b, 200, "b");
-// makeBox(c, 200, "c");
-// group.scale = 0;
-// group.noStroke();
 
 two
   .bind("update", function(frameCount) {
