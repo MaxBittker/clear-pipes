@@ -62,3 +62,15 @@ h1 {
     transform: rotate(360deg);
   }
 }
+
+.word-bank {
+  text-align: justify;
+  font-size: 17px;
+  margin-top: 1px;
+}
+.word-span {
+  background-color: rgba(200, 0, 200, 0.05);
+  /* border: 1px solid rgba(200, 0, 200, 0.5); */
+  border-radius: 3px;
+  padding: 0px 2px;
+}

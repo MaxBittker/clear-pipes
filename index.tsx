@@ -1,7 +1,7 @@
 import Two from "two.js";
 import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
-import { makeConnector, makeBox } from "./src/render";
+import { makeConnector, makeBox, makeGradient } from "./src/render";
 
 let elem = document.getElementById("draw-animation");
 
@@ -11,37 +11,63 @@ let height = window.innerHeight;
 let two = new Two({ fullscreen: true, autostart: true }).appendTo(elem);
 window.two = two;
 
-let text = ` After describing a fairy-tale existence with various cute marine
+let text = `After describing a fairy-tale existence with various cute marine
 mammals forever frolicking on and around her small wooden dock, she
-added, with faux causticness,`;
-` that the seals “look like big
+added, with faux causticness, that the seals “look like big
 Rottweilers swimming around.” After declaring optimistically, “I
 think I have a lot to say that might be interesting to people,” she
 did an abrupt volte-face, switching to a low, confessional timbre:
 “Who knows? Who knows, right, what I’m doing? I don’t know. Maybe no
 one will be interested.`;
+let words = text.split(" ");
 
 let p1 = new Two.Vector(200, 200);
-let p2 = new Two.Vector(400, 450);
+let p2 = new Two.Vector(500, 450);
 let p3 = new Two.Vector(220, 650);
-let p4 = new Two.Vector(600, 400);
+let p4 = new Two.Vector(700, 450);
 let c1 = makeConnector(p1, p2, "1");
 let c2 = makeConnector(p2, p3, "2", true);
 let c3 = makeConnector(p2, p4, "3");
 
-let b1 = makeBox(p1, 150, "a");
+let b1 = makeBox(p1, 350, "a");
 let b2 = makeBox(p2, 100, "b");
 let b3 = makeBox(p3, 150, "c");
+// let connections = [c1, c2];
 
-let connections = [c1, c2];
-c1.sendWord("wow", () => {
-  c2.sendWord("wow", () => {
-    b3.setText("wow");
+function formatWords(words: Array<string>) {
+  return `<p class="word-bank">${words
+    .map(w => `<span class="word-span">${w}</span>&nbsp;`)
+    .join(" ")}</p>`;
+}
+b1.setText(formatWords(words));
 
-    c3.sendWord("wow", () => {});
-  });
-});
+b2.setText("CHECK");
+b3.setText("");
 
+let destinationWords: Array<string> = [];
+
+function moveWord() {
+  let wordToMove = words.pop();
+
+  b1.setText(formatWords(words));
+
+  return c1
+    .sendWord(wordToMove)
+    .then(() => {
+      if (wordToMove.length > 4) {
+        return c2.sendWord(wordToMove).then(() => {
+          destinationWords.push(wordToMove);
+          b3.setText(formatWords(destinationWords));
+        });
+      } else {
+        return c3.sendWord(wordToMove);
+      }
+    })
+
+    .then(moveWord);
+}
+moveWord();
+makeGradient(p4.x, p4.y, 200);
 // let half = new Two.Vector(100, 100);
 
 // let size = 200;

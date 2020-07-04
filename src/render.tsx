@@ -71,7 +71,7 @@ function makeBox(pos, size: number, id: string) {
           y2={`${r * 0.8}`}
         ></line>
       </svg>
-      <foreignobject id={id} x="10" y="10" width="100" height="100">
+      <foreignobject id={id} x="10" y="10" width={size - 20} height={size - 20}>
         <h1>{id}</h1>
       </foreignobject>
     </React.Fragment>
@@ -84,7 +84,7 @@ function makeBox(pos, size: number, id: string) {
   let html = document.getElementById(id);
   return {
     setText(word) {
-      html.innerHTML = `<h1>${word}</h1>`;
+      html.innerHTML = word;
     }
   };
 }
@@ -182,28 +182,59 @@ function makeConnector(p1, p2, id, flip = false) {
   );
 
   return {
-    sendWord(word, cb) {
+    sendWord(word: string): Promise<unknown> {
+      if (rotate > 0) {
+        word = word
+          .split("")
+          .reverse()
+          .join("");
+      }
       textPath.textContent = word;
       if (!textPath) {
         throw new Error("no path");
       }
-      let offset = -textPath.getComputedTextLength();
-      let updateOffset = () => {
-        if (!textPath) {
-          throw new Error("no path");
-        }
-        offset += 1;
-        textPath.setAttribute("startOffset", `${offset}px`);
-        if (offset < pathLength) {
-          window.requestAnimationFrame(updateOffset);
-        } else {
-          //   console.log("done :)");
-          cb();
-        }
-      };
-      updateOffset();
+
+      const animationProgress = new Promise((resolve, reject) => {
+        let offset = -textPath.getComputedTextLength();
+        let updateOffset = () => {
+          if (!textPath) {
+            throw new Error("no path");
+          }
+          offset += 5;
+          textPath.setAttribute("startOffset", `${offset}px`);
+          if (offset < pathLength) {
+            window.requestAnimationFrame(updateOffset);
+          } else {
+            //   console.log("done :)");
+            resolve();
+          }
+        };
+        updateOffset();
+      });
+
+      return animationProgress;
     }
   };
 }
+function makeGradient(x, y, size) {
+  let two = window.two;
+  var linearGradient = two.makeLinearGradient(
+    -size / 2,
+    0,
+    size / 2,
+    0,
+    new Two.Stop(0, "rgba(255,255,255,0)"),
+    // new Two.Stop(0.5, "blue")
+    new Two.Stop(0.5, "rgba(255,255,255,255)")
+    // new Two.Stop(1, )
+  );
 
-export { makeConnector, makeBox };
+  var rectangle = two.makeRectangle(x, y, size, size);
+  //   var rectangle2 = two.makeRectangle(x, y, size, size);
+
+  rectangle.noStroke();
+
+  rectangle.fill = linearGradient;
+}
+
+export { makeConnector, makeBox, makeGradient };
