@@ -1,7 +1,7 @@
 import Two from "two.js";
 import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
-import { makeConnector, makeBox, makeGradient } from "./src/render";
+import { makeConnector, makeBox, makeGradient, makeHopper } from "./src/render";
 import { startPhysics } from "./src/physics";
 
 let elem = document.getElementById("draw-animation");
@@ -58,21 +58,21 @@ Advertisement
 let words = text.split(/(\s+)/).filter(w => w.trim().length > 0);
 
 let p1 = new Two.Vector(200, 200);
-let p2 = new Two.Vector(500, 450);
-let p3 = new Two.Vector(220, 650);
-let p4 = new Two.Vector(700, 450);
+let p2 = new Two.Vector(300, 650);
+let p3 = new Two.Vector(620, 650);
+let p4 = new Two.Vector(300, 950);
 let c1 = makeConnector(p1, p2, "1", true);
 let c2 = makeConnector(p2, p3, "2", true);
 let c3 = makeConnector(p2, p4, "3");
 
-let b1 = makeBox(p1, 350, "a");
+let b1 = makeHopper(p1, 350, "a");
 let b2 = makeBox(p2, 100, "b");
 let b3 = makeBox(p3, 150, "c");
 // let connections = [c1, c2];
 
 let { addWord, removeWord } = startPhysics(b1);
 
-words.slice(0, 15).map(addWord);
+words.slice(0, 65).map(addWord);
 
 function formatWords(words: Array<string>) {
   return `<p class="word-bank">${words
@@ -125,8 +125,8 @@ makeGradient(p4.x, p4.y, 200);
 //   points.push(p);
 //   let id = "curve" + i;
 
-//   // makeConnector(Two.Vector.add(p, half), Two.Vector.add(p2, half), id);
-//   // makeBox(p, 100, i.toString());
+//   makeConnector(Two.Vector.add(p, half), Two.Vector.add(p2, half), id);
+//   makeBox(p, 100, i.toString());
 //   // makeBox(p2, 100, (i + 1).toString());
 // }
 

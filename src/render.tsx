@@ -4,6 +4,121 @@ import * as ReactDOMServer from "react-dom/server";
 import * as morphdom from "morphdom";
 let morph = morphdom.default;
 
+function makeHopper(pos, size: number, id: string) {
+  let two = window.two;
+  let verts = [
+    new Two.Anchor(0, 0),
+    new Two.Anchor(size, 0),
+    new Two.Anchor(size, size),
+    new Two.Anchor(size / 2, size * 1.25),
+    new Two.Anchor(0, size),
+    new Two.Anchor(0, 0)
+  ];
+  let verts2 = [
+    new Two.Anchor(size, 0),
+
+    new Two.Anchor(size + 10, 0 + 10),
+    new Two.Anchor(size + 10, size + 10),
+    new Two.Anchor(size / 2 + 10, size * 1.25 + 10),
+    new Two.Anchor(10, size + 10),
+    new Two.Anchor(0, size)
+  ];
+  let body1 = two.makePath(verts, true);
+  let body2 = two.makePath(verts2, true);
+  let line = two.makeLine(
+    size / 2,
+    size * 1.25,
+    size / 2 + 10,
+    size * 1.25 + 10
+  );
+  let line2 = two.makeLine(size, size, size + 10, size + 10);
+
+  body1.fill = "white";
+  body2.fill = "lavender";
+
+  let group = two.makeGroup(body2, body1, line, line2);
+  two.update();
+
+  let r = 25;
+  let contentId = "content" + id;
+  const htmlString = ReactDOMServer.renderToStaticMarkup(
+    <React.Fragment>
+      <foreignobject x="0" y="0" width={size} height={size * 1.25}>
+        <div id={contentId}>{/* <h1>{id}</h1> */}</div>
+      </foreignobject>
+      <svg
+        width={r * 2}
+        height={r * 2}
+        x={size / 2 - r}
+        y={size * 1.25 - r - 5}
+        viewBox={`${-r} ${-r} ${2 * r} ${2 * r}`}
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+      >
+        <circle
+          cx={r * 0.15}
+          cy={r * 0.15}
+          r={`${r * 0.8}`}
+          fill="lavender"
+          stroke="black"
+        />
+
+        <circle className="pinwheel" cx="0" cy="0" r={`${r * 0.8}`} />
+        <line
+          className="pinwheel"
+          x1={r * -0.8 * Math.SQRT1_2}
+          y1={r * -0.8 * Math.SQRT1_2}
+          x2={r * 0.8 * Math.SQRT1_2}
+          y2={r * 0.8 * Math.SQRT1_2}
+        ></line>
+        <line
+          className="pinwheel"
+          x1={r * 0.8 * Math.SQRT1_2}
+          y1={r * -0.8 * Math.SQRT1_2}
+          x2={r * -0.8 * Math.SQRT1_2}
+          y2={r * 0.8 * Math.SQRT1_2}
+        ></line>
+        <line
+          className="pinwheel"
+          x1={`${r * -0.8}`}
+          y1="0"
+          x2={`${r * 0.8}`}
+          y2="0.0"
+        ></line>
+        <line
+          className="pinwheel"
+          x1="0"
+          y1={`${r * -0.8}`}
+          x2="0"
+          y2={`${r * 0.8}`}
+        ></line>
+      </svg>
+    </React.Fragment>
+  );
+  let svgElem = group._renderer.elem;
+
+  svgElem.innerHTML += htmlString;
+
+  group.translation.set(pos.x - size / 2, pos.y - size / 2);
+  //   let htmlContent = document.getElementById(contentId);
+  return {
+    setText(word) {
+      let newHTML = `
+          
+          <div id="${contentId}">
+           ${word}
+          </div>
+          `;
+      let htmlContent = document.getElementById(contentId);
+
+      //   console.log(word);
+
+      //   morph(htmlContent, newHTML);
+      htmlContent.innerHTML = word;
+    }
+  };
+}
+
 function makeBox(pos, size: number, id: string) {
   let two = window.two;
   let rect1 = two.makeRectangle(size / 2, size / 2, size, size);
@@ -233,10 +348,12 @@ function makeConnector(p1, p2, id, flip = false) {
 function makeGradient(x, y, size) {
   let two = window.two;
   var linearGradient = two.makeLinearGradient(
+    0,
+
     -size / 2,
     0,
+
     size / 2,
-    0,
     new Two.Stop(0, "rgba(255,255,255,0)"),
     // new Two.Stop(0.5, "blue")
     new Two.Stop(0.5, "rgba(255,255,255,255)")
@@ -251,4 +368,4 @@ function makeGradient(x, y, size) {
   rectangle.fill = linearGradient;
 }
 
-export { makeConnector, makeBox, makeGradient };
+export { makeConnector, makeBox, makeHopper, makeGradient };

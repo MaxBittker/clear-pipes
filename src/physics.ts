@@ -1,27 +1,23 @@
 import * as Matter from "matter-js";
 
 // module aliases
-var Engine = Matter.Engine,
+let Engine = Matter.Engine,
   World = Matter.World,
   Bodies = Matter.Bodies;
 
 // create an engine
-var engine = Engine.create({
+let engine = Engine.create({
   positionIterations: 5,
   constraintIterations: 5
   //   enableSleeping: true
 });
 
 let scratchSvg = document.getElementById("scratch");
-
+const textStyle = `font-size: 15px; alignment-baseline: middle; text-anchor: middle;`;
 function renderedTextSize(string: string) {
-  const textStyle = `font-size: 15px; alignment-baseline: middle; text-anchor: middle;`;
-
   scratchSvg.innerHTML = `<text id="scratchText" style="${textStyle}">${string}</text>`;
-
   let scratchText = document.getElementById("scratchText");
   var bBox = scratchText.getBBox();
-
   return {
     width: bBox.width,
     height: bBox.height
@@ -32,12 +28,21 @@ function startPhysics(box) {
 
   //   words = words.slice(0, 100);
 
-  var ground = Bodies.rectangle(200, 350, 400, 6, { isStatic: true });
-  var leftWall = Bodies.rectangle(0, 200, 6, 400, { isStatic: true });
-  var rightWall = Bodies.rectangle(350, 200, 6, 400, { isStatic: true });
+  let ground = Bodies.rectangle(200, 350 * 1.25, 400, 6, { isStatic: true });
+  let leftWall = Bodies.rectangle(0, 200, 6, 400, { isStatic: true });
+  let rightWall = Bodies.rectangle(350, 200, 6, 400, { isStatic: true });
+  let leftRamp = Bodies.rectangle(50, 5 + 350 * 1.0625, 300, 20, {
+    isStatic: true,
+    angle: Math.PI * 0.15
+  });
+  let rightRamp = Bodies.rectangle(300, 5 + 350 * 1.0625, 300, 20, {
+    isStatic: true,
+    angle: Math.PI * 0.85
+  });
 
   // add all of the bodies to the world
-  World.add(engine.world, [ground, leftWall, rightWall]);
+  World.add(engine.world, [ground, leftWall, rightWall, leftRamp, rightRamp]);
+  //   World.add(engine.world, [ground, leftWall, rightWall]); //, leftRamp, rightRamp]);
 
   // run the engine
   Engine.run(engine);
@@ -46,6 +51,7 @@ function startPhysics(box) {
 
   Matter.Events.on(engine, "afterUpdate", () => {
     const paths = boxes.map((body, index) => {
+      // const paths = engine.world.bodies.map((body, index) => {
       const { vertices, position, angle } = body;
       const pathData = `M ${body._width * -0.5} ${body._height * -0.5} l ${
         body._width
@@ -55,7 +61,6 @@ function startPhysics(box) {
       const style = `fill: ${fillColor}; fill-opacity: 1; stroke: grey; stroke-width: 1px; stroke-opacity: 0.5`;
       const degrees = radToDeg(angle);
       const transform = `translate(${position.x}, ${position.y}) rotate(${degrees})`;
-      const textStyle = `font-size: 15px; alignment-baseline: middle; text-anchor: middle;`;
       let path = null;
       path = `<path d="${pathData}" style="${style}"></path>`;
       return `
@@ -83,7 +88,7 @@ function startPhysics(box) {
       );
       body._width = width;
       body._height = height;
-      body.frictionAir = 0.1;
+      body.frictionAir = 0.05;
       body.label = word;
 
       boxes.push(body);
