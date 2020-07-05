@@ -3,7 +3,7 @@ import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
 import * as morphdom from "morphdom";
 let morph = morphdom.default;
-console.log(morph);
+
 function makeBox(pos, size: number, id: string) {
   let two = window.two;
   let rect1 = two.makeRectangle(size / 2, size / 2, size, size);
@@ -74,10 +74,8 @@ function makeBox(pos, size: number, id: string) {
           y2={`${r * 0.8}`}
         ></line>
       </svg>
-      <foreignobject x="10" y="10" width={size - 20} height={size - 20}>
-        <div id={contentId}>
-          <h1>{id}</h1>
-        </div>
+      <foreignobject x="0" y="0" width={size} height={size}>
+        <div id={contentId}>{/* <h1>{id}</h1> */}</div>
       </foreignobject>
     </React.Fragment>
   );
