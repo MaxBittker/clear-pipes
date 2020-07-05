@@ -42,7 +42,7 @@ function formatWords(words: Array<string>) {
 b1.setText(formatWords(words));
 
 b2.setText("CHECK");
-b3.setText("");
+// b3.setText(" ");
 
 let destinationWords: Array<string> = [];
 

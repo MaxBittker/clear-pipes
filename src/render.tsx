@@ -1,7 +1,9 @@
 import Two from "two.js";
 import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
-
+import * as morphdom from "morphdom";
+let morph = morphdom.default;
+console.log(morph);
 function makeBox(pos, size: number, id: string) {
   let two = window.two;
   let rect1 = two.makeRectangle(size / 2, size / 2, size, size);
@@ -22,6 +24,7 @@ function makeBox(pos, size: number, id: string) {
   two.update();
 
   let r = 25;
+  let contentId = "content" + id;
   const htmlString = ReactDOMServer.renderToStaticMarkup(
     <React.Fragment>
       <svg
@@ -71,8 +74,10 @@ function makeBox(pos, size: number, id: string) {
           y2={`${r * 0.8}`}
         ></line>
       </svg>
-      <foreignobject id={id} x="10" y="10" width={size - 20} height={size - 20}>
-        <h1>{id}</h1>
+      <foreignobject x="10" y="10" width={size - 20} height={size - 20}>
+        <div id={contentId}>
+          <h1>{id}</h1>
+        </div>
       </foreignobject>
     </React.Fragment>
   );
@@ -81,10 +86,21 @@ function makeBox(pos, size: number, id: string) {
   svgElem.innerHTML += htmlString;
 
   group.translation.set(pos.x - size / 2, pos.y - size / 2);
-  let html = document.getElementById(id);
+  //   let htmlContent = document.getElementById(contentId);
   return {
     setText(word) {
-      html.innerHTML = word;
+      let newHTML = `
+        
+        <div id="${contentId}">
+         ${word}
+        </div>
+        `;
+      let htmlContent = document.getElementById(contentId);
+
+      //   console.log(word);
+
+      morph(htmlContent, newHTML);
+      //   html.innerHTML = word;
     }
   };
 }
