@@ -97,8 +97,8 @@ function makeBox(pos, size: number, id: string) {
 
       //   console.log(word);
 
-      morph(htmlContent, newHTML);
-      //   html.innerHTML = word;
+      //   morph(htmlContent, newHTML);
+      htmlContent.innerHTML = word;
     }
   };
 }
@@ -163,7 +163,7 @@ function makeConnector(p1, p2, id, flip = false) {
       />
 
       <text width="100%" rotate={rotate}>
-        <textPath
+        <textpath
           href={"#" + id}
           startOffset="00px"
           id={"textpath" + id}
@@ -178,7 +178,7 @@ function makeConnector(p1, p2, id, flip = false) {
               dur={`${length / 50}s`}
               repeatCount="indefinite"
             /> */}
-        </textPath>
+        </textpath>
       </text>
     </React.Fragment>
   );

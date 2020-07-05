@@ -1,15 +1,18 @@
 import Two from "two.js";
 import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
-import * as Matter from "matter-js";
 import { makeConnector, makeBox, makeGradient } from "./src/render";
+import { startPhysics } from "./src/physics";
 
 let elem = document.getElementById("draw-animation");
 
 let width = window.innerWidth;
 let height = window.innerHeight;
+window.width = width;
+window.height = height;
 
 let two = new Two({ fullscreen: true, autostart: true }).appendTo(elem);
+
 window.two = two;
 
 let text = `After describing a fairy-tale existence with various cute marine
@@ -67,6 +70,10 @@ let b2 = makeBox(p2, 100, "b");
 let b3 = makeBox(p3, 150, "c");
 // let connections = [c1, c2];
 
+let { addWord, removeWord } = startPhysics(b1);
+
+words.slice(0, 15).map(addWord);
+
 function formatWords(words: Array<string>) {
   return `<p class="word-bank">${words
     .map(w => `<span class="word-span">${w}</span>&nbsp;`)
@@ -80,9 +87,9 @@ b2.setText("CHECK");
 let destinationWords: Array<string> = [];
 
 function moveWord() {
-  let wordToMove = words.shift();
+  let wordToMove = removeWord();
 
-  b1.setText(formatWords(words));
+  // b1.setText(formatWords(words));
 
   return c1
     .sendWord(wordToMove)
@@ -99,7 +106,7 @@ function moveWord() {
 
     .then(moveWord);
 }
-// moveWord();
+moveWord();
 makeGradient(p4.x, p4.y, 200);
 // let half = new Two.Vector(100, 100);
 
@@ -127,116 +134,4 @@ makeGradient(p4.x, p4.y, 200);
 //   // makeBox(p, 100, i.toString());
 // });
 
-two
-  .bind("update", function(frameCount) {
-    // This code is called everytime two.update() is called.
-    // Effectively 60 times per second.
-    // if (group.scale > 0.9999) {
-    // group.scale = group.rotation = 0;
-    // }
-    // let t = (1 - group.scale) * 0.125;
-    // group.scale += t;
-    // group.rotation += t * 4 * Math.PI;
-  })
-  .play(); // Finally, start the animation loop
-
-// module aliases
-var Engine = Matter.Engine,
-  Render = Matter.Render,
-  World = Matter.World,
-  Bodies = Matter.Bodies;
-
-// create an engine
-var engine = Engine.create({
-  positionIterations: 10,
-  constraintIterations: 10,
-  enableSleeping: true
-});
-
-// create a renderer
-let el = document.getElementById("contenta");
-console.log(el.getBoundingClientRect().width);
-console.log(el.getBoundingClientRect().height);
-var render = Render.create({
-  element: el,
-  engine: engine,
-  options: {
-    width: 350,
-    height: 350,
-    wireframes: false,
-    background: "transparent"
-    // enableSleeping: true
-  }
-});
-
-// create two boxes and a ground
-
-words = words.slice(0, 100);
-let boxes = words.map(word => {
-  let w = word.length * 8;
-  let h = 15;
-  let body = Bodies.rectangle(
-    100 + Math.random() * 100,
-    -Math.random() * 800,
-    w,
-    h,
-    {
-      fillStyle: "red",
-      strokeStyle: "blue",
-      lineWidth: 3
-    }
-  );
-  body._width = w;
-  body._height = h;
-
-  // body.setDensity(9);
-  // body.friction = 0.5;
-  body.frictionAir = 0.1;
-  body.name = word;
-  // body.frictionStatic = 0.9;
-  // body.resitution = 0.8;
-
-  return body;
-});
-
-var ground = Bodies.rectangle(200, 350, 400, 6, { isStatic: true });
-var leftWall = Bodies.rectangle(0, 200, 6, 400, { isStatic: true });
-var rightWall = Bodies.rectangle(350, 200, 6, 400, { isStatic: true });
-
-// add all of the bodies to the world
-World.add(engine.world, [ground, leftWall, rightWall, ...boxes]);
-
-// run the engine
-Engine.run(engine);
-
-// run the renderer
-// Render.run(render);
-
-let radToDeg = r => r * (180 / Math.PI);
-
-Matter.Events.on(engine, "afterUpdate", () => {
-  const bodies = boxes;
-
-  const paths = bodies.map((body, index) => {
-    const { vertices, position, angle } = body;
-    const pathData = `M ${body._width * -0.5} ${body._height * -0.5} l ${
-      body._width
-    } 0 l 0 ${body._height} l ${-body._width} 0 z`;
-    const style = `fill: black; fill-opacity: 0.03; stroke: black; stroke-width: 1px; stroke-opacity: 0.7`;
-    const degrees = radToDeg(angle);
-    const transform = `translate(${position.x}, ${position.y}) rotate(${degrees})`;
-    const textStyle = `font-size: 15px; alignment-baseline: middle; text-anchor: middle;`;
-    let path = null;
-    path = `<path d="${pathData}" style="${style}"></path>`;
-    return `
-      <g transform="${transform}" >
-        ${path}
-        <text style="${textStyle}">${body.name}</text>
-      </g>
-    `;
-  });
-  const style = `height: ${height}px; width: ${width}px; shape-rendering: geometricPrecision;`;
-  b1.setText(`
-    <svg style="${style}">${paths}</svg>
-  `);
-});
+two.bind("update", function(frameCount) {}).play(); // Finally, start the animation loop
