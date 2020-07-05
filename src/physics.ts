@@ -3,6 +3,7 @@ import * as Matter from "matter-js";
 // module aliases
 let Engine = Matter.Engine,
   World = Matter.World,
+  Vector = Matter.Vector,
   Bodies = Matter.Bodies;
 
 // create an engine
@@ -23,10 +24,25 @@ function renderedTextSize(string: string) {
     height: bBox.height
   };
 }
+function closestBody(bodies: [], point: Matter.Vector) {
+  if (bodies.length == 0) {
+    return;
+  }
+  let smallest_d = Infinity;
+  let smallest = bodies[0];
+  bodies.forEach(body => {
+    let d = Vector.magnitude(Vector.sub(body.position, point));
+    // console.log(body);
+    if (d < smallest_d) {
+      smallest = body;
+      smallest_d = d;
+    }
+  });
+  return smallest;
+}
+
 function startPhysics(box) {
   let boxes = [];
-
-  //   words = words.slice(0, 100);
 
   let ground = Bodies.rectangle(200, 350 * 1.25, 400, 6, { isStatic: true });
   let leftWall = Bodies.rectangle(0, 200, 6, 400, { isStatic: true });
@@ -48,7 +64,6 @@ function startPhysics(box) {
   Engine.run(engine);
 
   let radToDeg = r => r * (180 / Math.PI);
-
   Matter.Events.on(engine, "afterUpdate", () => {
     const paths = boxes.map((body, index) => {
       // const paths = engine.world.bodies.map((body, index) => {
@@ -78,7 +93,7 @@ function startPhysics(box) {
   return {
     addWord: (word: string) => {
       let { width, height } = renderedTextSize(word);
-      width += 5;
+      width += 10;
       height += 5;
       let body = Bodies.rectangle(
         100 + Math.random() * 100,
@@ -96,7 +111,7 @@ function startPhysics(box) {
       return body;
     },
     removeWord: () => {
-      let box = boxes[0];
+      let box = closestBody(boxes, { x: 175, y: 350 * 1.25 });
       if (!box) return;
       //   box.isSleeping = false;
       Matter.Body.setVelocity(box, { x: 0, y: -5 });
@@ -105,7 +120,7 @@ function startPhysics(box) {
       window.setTimeout(() => {
         // console.log("c");
         World.remove(engine.world, box);
-        boxes.shift();
+        boxes = boxes.filter(b => b != box);
       }, 200);
 
       return box.label;
