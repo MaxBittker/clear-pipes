@@ -14,7 +14,7 @@ let engine = Engine.create({
 });
 
 let scratchSvg = document.getElementById("scratch");
-const textStyle = `font-size: 15px; alignment-baseline: middle; text-anchor: middle;`;
+const textStyle = `font-size: 18px; alignment-baseline: middle; text-anchor: middle;`;
 function renderedTextSize(string: string) {
   scratchSvg.innerHTML = `<text id="scratchText" style="${textStyle}">${string}</text>`;
   let scratchText = document.getElementById("scratchText");

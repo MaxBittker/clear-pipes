@@ -57,20 +57,36 @@ Advertisement
 ;`;
 let words = text.split(/(\s+)/).filter(w => w.trim().length > 0);
 
-let p1 = new Two.Vector(200, 200);
-let p2 = new Two.Vector(300, 650);
-let p3 = new Two.Vector(620, 650);
-let p4 = new Two.Vector(300, 950);
-let c1 = makeConnector(p1, p2, "1", true);
-let c2 = makeConnector(p2, p3, "2", true);
-let c3 = makeConnector(p2, p4, "3");
+let pHopper = new Two.Vector(200, 200);
+let pClean = new Two.Vector(200, 750);
+let pRule = new Two.Vector(500, 750);
+let pCheck = new Two.Vector(700, 750);
+let pDestination = new Two.Vector(860, 350);
+let pTrash = new Two.Vector(0, 900);
 
-let b1 = makeHopper(p1, 350, "a");
-let b2 = makeBox(p2, 100, "b");
-let b3 = makeBox(p3, 150, "c");
+let p6 = new Two.Vector(300, 1050);
+
+let c1 = makeConnector(pHopper, pClean, "1", true, true);
+let c2 = makeConnector(pClean, pRule, "2", true);
+let c3 = makeConnector(pRule, pCheck, "3");
+let c4 = makeConnector(pCheck, pDestination, "3");
+
+let c5 = makeConnector(pClean, pTrash, "3", true);
+let c6 = makeConnector(pRule, pTrash, "4", true);
+let c7 = makeConnector(pCheck, pTrash, "5", true);
+
+let boxHopper = makeHopper(pHopper, 350, "a");
+let boxClean = makeBox(pClean, 100, "b");
+boxClean.setText("CLEAN PUNCTUATION");
+let boxRule = makeBox(pRule, 100, "c");
+boxRule.setText("PASSES RULE");
+let boxCheck = makeBox(pCheck, 100, "d");
+boxCheck.setText("API CHECK");
+
+let boxDestination = makeBox(pDestination, 150, "e");
 // let connections = [c1, c2];
 
-let { addWord, removeWord } = startPhysics(b1);
+let { addWord, removeWord } = startPhysics(boxHopper);
 
 words.slice(0, 65).map(addWord);
 
@@ -79,17 +95,13 @@ function formatWords(words: Array<string>) {
     .map(w => `<span class="word-span">${w}</span>&nbsp;`)
     .join(" ")}</p>`;
 }
-// b1.setText(formatWords(words));
-
-b2.setText("CHECK");
-// b3.setText(" ");
 
 let destinationWords: Array<string> = [];
 
-function moveWord() {
+function moveWord(): Promise<void> {
   let wordToMove = removeWord();
 
-  // b1.setText(formatWords(words));
+  // boxHopper.setText(formatWords(words));
 
   return c1
     .sendWord(wordToMove)
@@ -97,7 +109,7 @@ function moveWord() {
       if (wordToMove.length > 4) {
         return c2.sendWord(wordToMove).then(() => {
           destinationWords.push(wordToMove);
-          b3.setText(formatWords(destinationWords));
+          boxDestination.setText(formatWords(destinationWords));
         });
       } else {
         return c3.sendWord(wordToMove);
@@ -107,31 +119,5 @@ function moveWord() {
     .then(moveWord);
 }
 moveWord();
-makeGradient(p4.x, p4.y, 200);
-// let half = new Two.Vector(100, 100);
-
-// let size = 200;
-// let points = [
-//   new Two.Vector(Math.random() * two.width, Math.random() * two.height)
-// ];
-// for (let i = 0; i < 3; i++) {
-//   let p2 = points[points.length - 1];
-
-//   let p = new Two.Vector(
-//     size + Math.random() * (two.width - size * 3),
-//     size + Math.random() * (two.height - size * 3)
-//   );
-
-//   points.push(p);
-//   let id = "curve" + i;
-
-//   makeConnector(Two.Vector.add(p, half), Two.Vector.add(p2, half), id);
-//   makeBox(p, 100, i.toString());
-//   // makeBox(p2, 100, (i + 1).toString());
-// }
-
-// points.forEach((p, i) => {
-//   // makeBox(p, 100, i.toString());
-// });
 
 two.bind("update", function(frameCount) {}).play(); // Finally, start the animation loop

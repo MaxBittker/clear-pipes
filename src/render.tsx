@@ -113,8 +113,8 @@ function makeHopper(pos, size: number, id: string) {
 
       //   console.log(word);
 
-      //   morph(htmlContent, newHTML);
-      htmlContent.innerHTML = word;
+      morph(htmlContent, newHTML);
+      //   htmlContent.innerHTML = word;
     }
   };
 }
@@ -212,8 +212,8 @@ function makeBox(pos, size: number, id: string) {
 
       //   console.log(word);
 
-      //   morph(htmlContent, newHTML);
-      htmlContent.innerHTML = word;
+      morph(htmlContent, newHTML);
+      //   htmlContent.innerHTML = word;
     }
   };
 }
@@ -224,7 +224,7 @@ function makePath(a, b) {
   two.makeLine(mid.x, mid.y, b.x, b.y);
 }
 
-function makeConnector(p1, p2, id, flip = false) {
+function makeConnector(p1, p2, id, flip = false, wiggly = false) {
   let two = window.two;
   // let path = makePath(p1, p2);
 
@@ -264,13 +264,34 @@ function makeConnector(p1, p2, id, flip = false) {
       .reverse()
       .join("");
   }
+
+  let wiggle = "";
+  if (wiggly) {
+    wiggle = `
+    l 0 320
+              
+    a 25 25, 0, 0, 1, -25, 25
+    l -75 0
+    a 25 25, 0, 0, 0, -25, 25
+    l 0 0
+    a 25 25, 0, 0, 0, 25, 25
+    l 200 0
+    a 25 25, 0, 0, 1, 25, 25
+    l 0 0
+    a 25 25, 0, 0, 1, -25, 25
+    l -75 0
+    a 25 25, 0, 0, 0, -25, 25
+    `;
+  }
   const htmlString = ReactDOMServer.renderToStaticMarkup(
     <React.Fragment>
       <path
         className="textpath"
         id={id}
         d={`M ${p1.x} ${p1.y}
-  L  ${pM.x - rx * xFirst} ${pM.y - ry * yFirst}
+        ${wiggle}
+
+        L  ${pM.x - rx * xFirst} ${pM.y - ry * yFirst}
   A 45, 45, 0, 0, ${sweep}, ${pM.x - rx * yFirst} ${pM.y - ry * xFirst}
   L  ${p2.x} ${p2.y}
   `}
@@ -329,7 +350,7 @@ function makeConnector(p1, p2, id, flip = false) {
           if (!textPath) {
             throw new Error("no path");
           }
-          offset += 5;
+          offset += 2;
           textPath.setAttribute("startOffset", `${offset}px`);
           if (offset < pathLength) {
             window.requestAnimationFrame(updateOffset);
