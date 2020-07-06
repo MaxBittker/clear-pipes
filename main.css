@@ -21,10 +21,13 @@ path {
   /* stroke-width: 40px; */
   /* stroke:red; */
 }
-.textpath {
+.tube {
   stroke-width: 30px;
   stroke: rgba(0, 0, 200, 0.05);
   /* stroke-dasharray: 20px 10px; */
+}
+.trash {
+  stroke: rgba(150, 0, 30, 0.1);
 }
 textPath {
   /* font-size: 0.4em; */

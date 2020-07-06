@@ -224,7 +224,7 @@ function makePath(a, b) {
   two.makeLine(mid.x, mid.y, b.x, b.y);
 }
 
-function makeConnector(p1, p2, id, flip = false, wiggly = false) {
+function makeConnector(p1, p2, id, flip = false, flourish = "") {
   let two = window.two;
   // let path = makePath(p1, p2);
 
@@ -265,9 +265,9 @@ function makeConnector(p1, p2, id, flip = false, wiggly = false) {
       .join("");
   }
 
-  let wiggle = "";
-  if (wiggly) {
-    wiggle = `
+  let flourishPath = "";
+  if (flourish == "wiggle") {
+    flourishPath = `
     l 0 320
               
     a 25 25, 0, 0, 1, -25, 25
@@ -282,15 +282,24 @@ function makeConnector(p1, p2, id, flip = false, wiggly = false) {
     l -75 0
     a 25 25, 0, 0, 0, -25, 25
     `;
+  } else if (flourish == "loop") {
+    flourishPath = `
+    l 150 0
+    a 25 25, 0, 0, 0, 25, -25
+    a 25 25, 0, 0, 0, -25, -25
+    a 25 25, 0, 0, 0, -25, 25
+    a 25 25, 0, 0, 0, 25, 25
+    `;
   }
+  console.log(id);
+  let className = id[0] == "t" ? "tube trash" : "tube";
   const htmlString = ReactDOMServer.renderToStaticMarkup(
     <React.Fragment>
       <path
-        className="textpath"
+        className={className}
         id={id}
         d={`M ${p1.x} ${p1.y}
-        ${wiggle}
-
+        ${flourishPath}
         L  ${pM.x - rx * xFirst} ${pM.y - ry * yFirst}
   A 45, 45, 0, 0, ${sweep}, ${pM.x - rx * yFirst} ${pM.y - ry * xFirst}
   L  ${p2.x} ${p2.y}
@@ -350,7 +359,7 @@ function makeConnector(p1, p2, id, flip = false, wiggly = false) {
           if (!textPath) {
             throw new Error("no path");
           }
-          offset += 2;
+          offset += 10;
           textPath.setAttribute("startOffset", `${offset}px`);
           if (offset < pathLength) {
             window.requestAnimationFrame(updateOffset);
@@ -369,15 +378,14 @@ function makeConnector(p1, p2, id, flip = false, wiggly = false) {
 function makeGradient(x, y, size) {
   let two = window.two;
   var linearGradient = two.makeLinearGradient(
-    0,
-
     -size / 2,
     0,
-
     size / 2,
-    new Two.Stop(0, "rgba(255,255,255,0)"),
+    0,
+    new Two.Stop(0.5, "rgba(255,255,255,255)"),
+    new Two.Stop(1, "rgba(255,255,255,0)")
+
     // new Two.Stop(0.5, "blue")
-    new Two.Stop(0.5, "rgba(255,255,255,255)")
     // new Two.Stop(1, )
   );
 

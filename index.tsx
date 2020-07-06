@@ -62,18 +62,21 @@ let pClean = new Two.Vector(200, 750);
 let pRule = new Two.Vector(500, 750);
 let pCheck = new Two.Vector(700, 750);
 let pDestination = new Two.Vector(860, 350);
-let pTrash = new Two.Vector(0, 900);
+let pTrash = new Two.Vector(0, 870);
+let pTrash2 = new Two.Vector(0, 905);
+let pTrash3 = new Two.Vector(0, 940);
+let pGradient = new Two.Vector(0, 905);
 
-let p6 = new Two.Vector(300, 1050);
-
-let c1 = makeConnector(pHopper, pClean, "1", true, true);
-let c2 = makeConnector(pClean, pRule, "2", true);
+let c1 = makeConnector(pHopper, pClean, "1", true, "wiggle");
+let c2 = makeConnector(pClean, pRule, "2", false, "loop");
 let c3 = makeConnector(pRule, pCheck, "3");
-let c4 = makeConnector(pCheck, pDestination, "3");
+let c4 = makeConnector(pCheck, pDestination, "4");
 
-let c5 = makeConnector(pClean, pTrash, "3", true);
-let c6 = makeConnector(pRule, pTrash, "4", true);
-let c7 = makeConnector(pCheck, pTrash, "5", true);
+let cTrash1 = makeConnector(pClean, pTrash, "t1", true);
+let cTrash2 = makeConnector(pRule, pTrash2, "t2", true);
+let cTrash3 = makeConnector(pCheck, pTrash3, "t3", true);
+let trashGradient = makeGradient(pGradient.x, pGradient.y, 200);
+// let c7 = makeConnector(pCheck, pTrash, "5", true);
 
 let boxHopper = makeHopper(pHopper, 350, "a");
 let boxClean = makeBox(pClean, 100, "b");
@@ -98,25 +101,38 @@ function formatWords(words: Array<string>) {
 
 let destinationWords: Array<string> = [];
 
-function moveWord(): Promise<void> {
+function moveWord(): Promise<any> {
   let wordToMove = removeWord();
 
   // boxHopper.setText(formatWords(words));
 
   return c1
-    .sendWord(wordToMove)
+    .sendWord(wordToMove + ",")
+    .then(() => {
+      moveWord();
+      cTrash1.sendWord(",");
+      return c2.sendWord(wordToMove);
+    })
     .then(() => {
       if (wordToMove.length > 4) {
-        return c2.sendWord(wordToMove).then(() => {
+        return c3.sendWord(wordToMove);
+      } else {
+        cTrash2.sendWord(wordToMove);
+        throw "done";
+      }
+    })
+    .then(() => {
+      if (wordToMove[0] != wordToMove[0].toUpperCase()) {
+        return c4.sendWord(wordToMove).then(() => {
           destinationWords.push(wordToMove);
           boxDestination.setText(formatWords(destinationWords));
         });
       } else {
-        return c3.sendWord(wordToMove);
+        return cTrash3.sendWord(wordToMove);
       }
-    })
+    });
 
-    .then(moveWord);
+  // .then(moveWord);
 }
 moveWord();
 
