@@ -12,6 +12,7 @@ window.width = width;
 window.height = height;
 
 let two = new Two({ fullscreen: true, autostart: true }).appendTo(elem);
+two.renderer.domElement.setAttribute("viewBox", "-0 -0 1000 1050");
 
 window.two = two;
 
