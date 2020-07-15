@@ -10,7 +10,8 @@ function makeHopper(pos, size: number, id: string) {
     new Two.Anchor(0, 0),
     new Two.Anchor(size, 0),
     new Two.Anchor(size, size),
-    new Two.Anchor(size / 2, size * 1.25),
+    new Two.Anchor(size / 2 + 15, size * 1.23),
+    new Two.Anchor(size / 2 - 15, size * 1.23),
     new Two.Anchor(0, size),
     new Two.Anchor(0, 0)
   ];
@@ -36,16 +37,22 @@ function makeHopper(pos, size: number, id: string) {
   body1.fill = "white";
   body2.fill = "lavender";
 
-  let group = two.makeGroup(body2, body1, line, line2);
+  let groupBackground = two.makeGroup(body2);
+  let group = two.makeGroup(body1, line2);
+
   two.update();
 
-  let r = 25;
+  let r = 30;
   let contentId = "content" + id;
-  const htmlString = ReactDOMServer.renderToStaticMarkup(
+  const htmlStringBody = ReactDOMServer.renderToStaticMarkup(
     <React.Fragment>
       <foreignobject x="0" y="0" width={size} height={size * 1.25}>
         <div id={contentId}>{/* <h1>{id}</h1> */}</div>
       </foreignobject>
+    </React.Fragment>
+  );
+  const htmlStringSpinner = ReactDOMServer.renderToStaticMarkup(
+    <React.Fragment>
       <svg
         width={r * 2}
         height={r * 2}
@@ -95,11 +102,15 @@ function makeHopper(pos, size: number, id: string) {
       </svg>
     </React.Fragment>
   );
-  let svgElem = group._renderer.elem;
 
-  svgElem.innerHTML += htmlString;
+  let svgElem = group._renderer.elem;
+  let svgElemBackground = groupBackground._renderer.elem;
+
+  svgElem.innerHTML += htmlStringBody;
+  svgElemBackground.innerHTML += htmlStringSpinner;
 
   group.translation.set(pos.x - size / 2, pos.y - size / 2);
+  groupBackground.translation.set(pos.x - size / 2, pos.y - size / 2);
   //   let htmlContent = document.getElementById(contentId);
   return {
     setText(word) {
@@ -134,8 +145,9 @@ function makeBox(pos, size: number, id: string) {
 
   path.fill = "lavender";
   rect1.fill = "white";
+  let group2 = two.makeGroup(path);
 
-  let group = two.makeGroup(path, rect1, line);
+  let group = two.makeGroup(rect1, line);
   two.update();
 
   let r = 25;
@@ -146,7 +158,7 @@ function makeBox(pos, size: number, id: string) {
         width={r * 2}
         height={r * 2}
         x={size - r}
-        y={size - r}
+        y={size / 2 - r}
         viewBox={`${-r} ${-r} ${2 * r} ${2 * r}`}
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -189,16 +201,46 @@ function makeBox(pos, size: number, id: string) {
           y2={`${r * 0.8}`}
         ></line>
       </svg>
+    </React.Fragment>
+  );
+  const htmlString2 = ReactDOMServer.renderToStaticMarkup(
+    <React.Fragment>
+      <svg
+        width={size}
+        height={size}
+        x={0}
+        y={0}
+        viewBox={`${-size} ${-size} ${size * 2} ${size * 2}`}
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+      >
+        {/* <rect
+          x={-25}
+          y={-25}
+          width="50"
+          height="50"
+          stroke="black"
+          fill="lavender"
+        ></rect>*/}
+        {/* <circle cx={-40} cy={0} r="30" fill="red"></circle> */}
+        {/* <circle cx={40} cy={0} r="30" fill="limegreen"></circle> */}
+        {/* <path d="M -10 5 l 10 10 l 14 -30" fill="none" stroke="black" strokeWidth="3"> */}
+        {/* </line> */}
+      </svg>
+
       <foreignobject x="0" y="0" width={size} height={size}>
         <div id={contentId}>{/* <h1>{id}</h1> */}</div>
       </foreignobject>
     </React.Fragment>
   );
   let svgElem = group._renderer.elem;
-
-  svgElem.innerHTML += htmlString;
+  let svgElem2 = group2._renderer.elem;
+  // svgElem.innerHTML += htmlString;
+  svgElem.innerHTML += htmlString2;
+  svgElem2.innerHTML += htmlString;
 
   group.translation.set(pos.x - size / 2, pos.y - size / 2);
+  group2.translation.set(pos.x - size / 2, pos.y - size / 2);
   //   let htmlContent = document.getElementById(contentId);
   return {
     setText(word) {
@@ -359,7 +401,7 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
           if (!textPath) {
             throw new Error("no path");
           }
-          offset += 10;
+          offset += 20;
           textPath.setAttribute("startOffset", `${offset}px`);
           if (offset < pathLength) {
             window.requestAnimationFrame(updateOffset);

@@ -91,7 +91,9 @@ function startPhysics(box) {
   `);
   });
   return {
-    addWord: (word: string) => {
+    addWord: (data: string) => {
+      if (!data) return;
+      let word = data[0];
       let { width, height } = renderedTextSize(word);
       width += 10;
       height += 5;
@@ -103,9 +105,11 @@ function startPhysics(box) {
       );
       body._width = width;
       body._height = height;
-      body.frictionAir = 0.05;
+      body.frictionAir = 0.03;
       body.label = word;
-
+      body.torque = Math.random() - 0.5;
+      body.force = { x: 0.01, y: 0.0 };
+      body.data = data;
       boxes.push(body);
       World.add(engine.world, body);
       return body;
@@ -123,7 +127,7 @@ function startPhysics(box) {
         boxes = boxes.filter(b => b != box);
       }, 200);
 
-      return box.label;
+      return box.data;
     }
   };
 }
