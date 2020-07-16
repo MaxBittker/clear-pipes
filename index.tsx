@@ -120,7 +120,7 @@ function moveWord(): Promise<any> {
     });
 }
 
-let url = "http://159.203.112.6:4444/July-15-2020.txt";
+let url = "https://api.shaderbooth.com:3002/static/records/July-15-2020.txt";
 fetch(url)
   .then(response => response.text())
   .then(blob => {
