@@ -78,10 +78,43 @@ function subtract(a, b) {
   });
   return out;
 }
-let wordList = [];
-let articles = [];
-let article_i = 0;
+
+const d = new Date();
+const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
+const mo = new Intl.DateTimeFormat("en", { month: "long" }).format(d);
+const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
+
+let date = `${mo}-${da}-${ye}`;
+var text = new Two.Text(`${mo} ${da}`, 490, 70, {
+  size: 105,
+  weight: 100,
+  family: "Libre Franklin",
+  alignment: "left"
+});
+
+var text2 = new Two.Text(`loading...         `, 500, 160, {
+  size: 60,
+  weight: 100,
+  family: "Libre Franklin",
+  alignment: "left"
+});
+var text3 = new Two.Text(``, 500, 210, {
+  size: 30,
+  weight: 100,
+  family: "Libre Franklin",
+  alignment: "left"
+});
+var group = two.makeGroup(text, text2, text3);
+
+var wordList = [];
+var articles = [];
+var article_i = 0;
+var wordCount = 0;
 function moveWord(): Promise<any> {
+  text2.value = `article ${article_i + 1}/${article_i + 1 + articles.length}`;
+  text3.value = `words processed ${wordCount}`;
+  two.update();
+  wordCount++;
   if (wordList.length == 0) {
     wordList = articles.shift();
     article_i++;
@@ -127,7 +160,10 @@ function moveWord(): Promise<any> {
     });
 }
 
-let url = "https://api.shaderbooth.com:3002/static/records/July-15-2020.txt";
+// debugger;
+
+two.update();
+let url = `https://api.shaderbooth.com:3002/static/records/${date}.txt`;
 fetch(url)
   .then(response => response.text())
   .then(blob => {

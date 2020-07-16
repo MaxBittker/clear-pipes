@@ -361,6 +361,7 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
               href={"#" + id}
               startOffset="00px"
               id={pid}
+              className="pipetext"
               key={pid}
               alignmentBaseline="middle"
             ></textpath>
@@ -413,7 +414,7 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
             cb();
             cb = null;
           }
-          offset += 5;
+          offset += parseInt(document.getElementById("speed").value, 10);
           textPath.setAttribute("startOffset", `${offset}px`);
           if (offset < pathLength) {
             window.requestAnimationFrame(updateOffset);

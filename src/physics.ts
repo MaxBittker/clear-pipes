@@ -33,11 +33,14 @@ function closestBody(bodies: [], point: Matter.Vector) {
   bodies.forEach(body => {
     let d = Vector.magnitude(Vector.sub(body.position, point));
     // console.log(body);
-    if (d < smallest_d) {
+    if (d < smallest_d && !body.pulse) {
       smallest = body;
       smallest_d = d;
     }
   });
+  if (smallest_d > 100) {
+    // return false;
+  }
   return smallest;
 }
 
@@ -99,13 +102,13 @@ function startPhysics(box) {
       height += 5;
       let body = Bodies.rectangle(
         100 + Math.random() * 100,
-        -Math.random() * 800,
+        -Math.random() * 200,
         width,
         height
       );
       body._width = width;
       body._height = height;
-      body.frictionAir = 0.03;
+      // body.frictionAir = 0.01;
       body.label = word;
       body.torque = Math.random() - 0.5;
       body.force = { x: 0.01, y: 0.0 };

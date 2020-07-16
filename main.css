@@ -12,7 +12,10 @@ body {
 text {
   fill: black;
   /* stroke: rgb(195, 195, 240); */
+
   /* stroke-width: 1px; */
+}
+.pipetext {
   font-size: 20px;
 }
 svg {
@@ -42,10 +45,17 @@ h1 {
 
 @media only screen and (max-width: 700px) {
 }
+#speed {
+  position: fixed;
+  left: 0;
+  z-index: 500;
+  bottom: 0;
+}
 .credit {
   position: fixed;
   right: 0;
   bottom: 0;
+  z-index: 500;
   text-shadow: white 0px 1px;
 }
 
