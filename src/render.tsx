@@ -327,14 +327,19 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
   } else if (flourish == "loop") {
     flourishPath = `
     l 150 0
-    a 25 25, 0, 0, 0, 25, -25
-    a 25 25, 0, 0, 0, -25, -25
-    a 25 25, 0, 0, 0, -25, 25
-    a 25 25, 0, 0, 0, 25, 25
+    a 50 50, 0, 0, 0, 50, -50
+    a 50 50, 0, 0, 0, -50, -50
+    a 50 50, 0, 0, 0, -50, 50
+    a 50 50, 0, 0, 0, 50, 50
     `;
   }
   console.log(id);
   let className = id[0] == "t" ? "tube trash" : "tube";
+
+  let pathIds = Array.from(
+    { length: 10 },
+    (x, i) => "textpath" + id + i.toString()
+  );
   const htmlString = ReactDOMServer.renderToStaticMarkup(
     <React.Fragment>
       <path
@@ -350,22 +355,17 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
       />
 
       <text width="100%" rotate={rotate}>
-        <textpath
-          href={"#" + id}
-          startOffset="00px"
-          id={"textpath" + id}
-          alignmentBaseline="middle"
-        >
-          {word}
-          {/* <animate
-              attributeName="startOffset"
-              from="0%"
-              to="100%"
-              begin="0s"
-              dur={`${length / 50}s`}
-              repeatCount="indefinite"
-            /> */}
-        </textpath>
+        {pathIds.map(pid => {
+          return (
+            <textpath
+              href={"#" + id}
+              startOffset="00px"
+              id={pid}
+              key={pid}
+              alignmentBaseline="middle"
+            ></textpath>
+          );
+        })}
       </text>
     </React.Fragment>
   );
@@ -376,32 +376,44 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
   let path: SVGPathElement = document.getElementById(id);
   let pathLength = path.getTotalLength();
 
-  let textPath: SVGTextPathElement = document.getElementById("textpath" + id);
-  textPath.setAttribute(
-    "startOffset",
-    `${-textPath.getComputedTextLength()}px`
-  );
+  let textPaths = pathIds.map(pid => document.getElementById(pid));
 
+  let p_i = 0;
   return {
-    sendWord(word: string): Promise<unknown> {
+    sendWord(word: string, clear: Function): Promise<unknown> {
       if (rotate > 0) {
         word = word
           .split("")
           .reverse()
           .join("");
       }
+      let textPath = textPaths[p_i];
+
+      p_i = (p_i + 1) % textPaths.length;
       textPath.textContent = word;
+
+      textPath.setAttribute(
+        "startOffset",
+        `${-textPath.getComputedTextLength()}px`
+      );
+
       if (!textPath) {
         throw new Error("no path");
       }
-
+      let cb = clear;
       const animationProgress = new Promise((resolve, reject) => {
         let offset = -textPath.getComputedTextLength();
+        offset = 0;
         let updateOffset = () => {
           if (!textPath) {
             throw new Error("no path");
           }
-          offset += 20;
+
+          if (cb && offset > textPath.getComputedTextLength() + 150) {
+            cb();
+            cb = null;
+          }
+          offset += 5;
           textPath.setAttribute("startOffset", `${offset}px`);
           if (offset < pathLength) {
             window.requestAnimationFrame(updateOffset);

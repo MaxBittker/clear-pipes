@@ -20,16 +20,16 @@ window.two = two;
 let pHopper = new Two.Vector(200, 200);
 let pClean = new Two.Vector(200, 750);
 let pRule = new Two.Vector(500, 750);
-let pCheck = new Two.Vector(700, 750);
-let pDestination = new Two.Vector(860, 350);
+let pCheck = new Two.Vector(800, 750);
+let pDestination = new Two.Vector(950, 350);
 let pTrash = new Two.Vector(0, 870);
 let pTrash2 = new Two.Vector(0, 905);
 let pTrash3 = new Two.Vector(0, 940);
 let pGradient = new Two.Vector(0, 905);
 
 let c1 = makeConnector(pHopper, pClean, "1", true, "wiggle");
-let c2 = makeConnector(pClean, pRule, "2", false, "loop");
-let c3 = makeConnector(pRule, pCheck, "3");
+let c2 = makeConnector(pClean, pRule, "2", false);
+let c3 = makeConnector(pRule, pCheck, "3", false, "loop");
 let c4 = makeConnector(pCheck, pDestination, "4");
 
 let cTrash1 = makeConnector(pClean, pTrash, "t1", true);
@@ -79,9 +79,16 @@ function subtract(a, b) {
   return out;
 }
 let wordList = [];
-
+let articles = [];
+let article_i = 0;
 function moveWord(): Promise<any> {
+  if (wordList.length == 0) {
+    wordList = articles.shift();
+    article_i++;
+    console.log("processing article " + articles);
+  }
   let word = wordList.shift();
+
   addWord(word);
   let [initial, cleaned, passed, count, rc] = removeWord();
   var checked = null;
@@ -94,9 +101,9 @@ function moveWord(): Promise<any> {
   // boxHopper.setText(formatWords(words));
 
   return c1
-    .sendWord(initial)
+    .sendWord(initial, moveWord)
     .then(() => {
-      moveWord();
+      // moveWord();
       cTrash1.sendWord(subtract(initial, cleaned));
       return c2.sendWord(cleaned);
     })
@@ -124,8 +131,9 @@ let url = "https://api.shaderbooth.com:3002/static/records/July-15-2020.txt";
 fetch(url)
   .then(response => response.text())
   .then(blob => {
-    let articles = processTDV(blob);
-    wordList = articles[1];
+    articles = processTDV(blob);
+    articles.shift();
+    wordList = articles.shift();
 
     // articles = articles.sort((a, b) => a.length - b.length);
     console.log(articles);
@@ -135,7 +143,7 @@ fetch(url)
       addWord(word);
     }
 
-    moveWord();
+    window.setTimeout(moveWord, 1400);
   });
 
 two.bind("update", function(frameCount) {}).play(); // Finally, start the animation loop

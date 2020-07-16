@@ -5,7 +5,7 @@ function processLine(str) {
 function processArticle(str) {
   let lines = str.split("\n");
   let url = lines.shift();
-  let rest = lines.map(processLine);
+  let rest = lines.filter(l => !l.startsWith("Advertisement")).map(processLine);
   return rest;
 }
 
