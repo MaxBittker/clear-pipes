@@ -123,13 +123,8 @@ function moveWord(): Promise<any> {
   let word = wordList.shift();
 
   addWord(word);
-  let [initial, cleaned, passed, count, rc] = removeWord();
-  var checked = null;
 
-  if (count && count.length > 2) {
-    checked = count;
-    count = rc;
-  }
+  let [initial, cleaned, passed, count, api_checked] = removeWord();
 
   // boxHopper.setText(formatWords(words));
 
@@ -149,9 +144,9 @@ function moveWord(): Promise<any> {
       }
     })
     .then(() => {
-      if (checked) {
-        return c4.sendWord(checked).then(() => {
-          destinationWords.push(checked);
+      if (api_checked) {
+        return c4.sendWord(api_checked).then(() => {
+          destinationWords.push(api_checked);
           boxDestination.setText(formatWords(destinationWords));
         });
       } else {

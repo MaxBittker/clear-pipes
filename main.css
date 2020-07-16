@@ -85,7 +85,7 @@ foreignObject > div {
   /* text-align: justify; */
   padding: 10px 0px 10px 10px;
   margin-right: 10px;
-  font-size: 17px;
+  font-size: 18px;
   /* word-wrap: no-wrap; */
   margin-top: 1px;
 
@@ -94,7 +94,7 @@ foreignObject > div {
   /* align-items: center; */
   /* flex-wrap: wrap; */
   height: 100%;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 }
 .word-span {
   /* position: absolute; */
