@@ -44,9 +44,9 @@ boxClean.setText("Clean & Trim Punctu-ation");
 let boxRule = makeBox(pRule, 100, "c");
 boxRule.setText("Not Capitalized?");
 let boxCheck = makeBox(pCheck, 100, "d");
-boxCheck.setText("Seen in Archives?");
+boxCheck.setText("Seen before in Archives?");
 
-let boxDestination = makeBox(pDestination, 150, "e");
+let boxDestination = makeBox(new Two.Vector(900, 350), 150, "e");
 // let connections = [c1, c2];
 
 let { addWord, removeWord, setGravity } = startPhysics(boxHopper);
@@ -59,7 +59,8 @@ function formatWords(words: Array<string>) {
     .join(" ")}</p>`;
 }
 
-let destinationWords: Array<string> = [];
+let destinationWords: Array<string> = ["Tweeted:"];
+boxDestination.setText(formatWords(destinationWords));
 
 function remove_first_occurrence(str, searchstr) {
   let index = str.indexOf(searchstr);
