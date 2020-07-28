@@ -45,11 +45,12 @@ h1 {
 
 @media only screen and (max-width: 700px) {
 }
-#speed {
+#speedbox {
   position: fixed;
-  left: 0;
+  left: 5;
   z-index: 500;
-  bottom: 0;
+  bottom: 5;
+  display: flex;
 }
 .credit {
   position: fixed;
@@ -58,10 +59,12 @@ h1 {
   z-index: 500;
   text-shadow: white 0px 1px;
 }
-
+:root {
+  --spin-duration: 2000ms;
+}
 .pinwheel {
   animation-name: spin;
-  animation-duration: 2000ms;
+  animation-duration: var(--spin-duration);
   animation-iteration-count: infinite;
   animation-timing-function: linear;
   fill: white;
@@ -80,6 +83,11 @@ h1 {
 foreignObject > div {
   margin-bottom: 10px;
   height: 100%;
+  /* padding: 10px; */
+  /* margin: 10px; */
+}
+.boxText {
+  padding: 5px;
 }
 .word-bank {
   /* text-align: justify; */

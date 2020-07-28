@@ -31,12 +31,16 @@ function closestBody(bodies: [], point: Matter.Vector) {
   let smallest_d = Infinity;
   let smallest = bodies[0];
   bodies.forEach(body => {
-    let d = Vector.magnitude(Vector.sub(body.position, point));
-    // console.log(body);
-    if (d < smallest_d && !body.pulse) {
-      smallest = body;
-      smallest_d = d;
-    }
+    let corners = body.vertices;
+
+    corners.forEach(c => {
+      let d = Vector.magnitude(Vector.sub(c, point));
+      // console.log(body);
+      if (d < smallest_d && !body.pulse) {
+        smallest = body;
+        smallest_d = d;
+      }
+    });
   });
   if (smallest_d > 100) {
     // return false;
@@ -94,6 +98,9 @@ function startPhysics(box) {
   `);
   });
   return {
+    setGravity: (n: number) => {
+      engine.world.gravity.y = n;
+    },
     addWord: (data: string) => {
       if (!data) return;
       let word = data[0];

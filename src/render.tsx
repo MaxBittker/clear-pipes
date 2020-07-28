@@ -246,7 +246,7 @@ function makeBox(pos, size: number, id: string) {
     setText(word) {
       let newHTML = `
         
-        <div id="${contentId}">
+        <div id="${contentId}" class="boxText">
          ${word}
         </div>
         `;
@@ -310,7 +310,7 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
   let flourishPath = "";
   if (flourish == "wiggle") {
     flourishPath = `
-    l 0 320
+    l 0 110
               
     a 25 25, 0, 0, 1, -25, 25
     l -75 0
@@ -327,10 +327,10 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
   } else if (flourish == "loop") {
     flourishPath = `
     l 150 0
-    a 50 50, 0, 0, 0, 50, -50
-    a 50 50, 0, 0, 0, -50, -50
-    a 50 50, 0, 0, 0, -50, 50
-    a 50 50, 0, 0, 0, 50, 50
+    a 40 40, 0, 0, 0, 40, -40
+    a 40 40, 0, 0, 0, -40, -40
+    a 40 40, 0, 0, 0, -40, 40
+    a 40 40, 0, 0, 0, 40, 40
     `;
   }
   console.log(id);
@@ -340,6 +340,12 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
     { length: 10 },
     (x, i) => "textpath" + id + i.toString()
   );
+
+  let A = `A 45, 45, 0, 0, ${sweep}, ${pM.x - rx * yFirst} ${pM.y -
+    ry * xFirst}`;
+  if (flourish != "") {
+    A = "";
+  }
   const htmlString = ReactDOMServer.renderToStaticMarkup(
     <React.Fragment>
       <path
@@ -348,7 +354,7 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
         d={`M ${p1.x} ${p1.y}
         ${flourishPath}
         L  ${pM.x - rx * xFirst} ${pM.y - ry * yFirst}
-  A 45, 45, 0, 0, ${sweep}, ${pM.x - rx * yFirst} ${pM.y - ry * xFirst}
+ ${A}
   L  ${p2.x} ${p2.y}
   `}
         fill="transparent"
@@ -393,24 +399,19 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
       p_i = (p_i + 1) % textPaths.length;
       textPath.textContent = word;
 
-      textPath.setAttribute(
-        "startOffset",
-        `${-textPath.getComputedTextLength()}px`
-      );
-
       if (!textPath) {
         throw new Error("no path");
       }
       let cb = clear;
       const animationProgress = new Promise((resolve, reject) => {
-        let offset = -textPath.getComputedTextLength();
-        offset = 0;
+        let offset = word.length * -10;
+
         let updateOffset = () => {
           if (!textPath) {
             throw new Error("no path");
           }
 
-          if (cb && offset > textPath.getComputedTextLength() + 150) {
+          if (cb && offset > word.length * 10 + 100) {
             cb();
             cb = null;
           }
