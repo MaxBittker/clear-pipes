@@ -4,6 +4,7 @@ import * as ReactDOMServer from "react-dom/server";
 import { makeConnector, makeBox, makeGradient, makeHopper } from "./src/render";
 import { startPhysics } from "./src/physics";
 import { processTDV } from "./src/process";
+import { Vector } from "matter-js";
 
 let elem = document.getElementById("draw-animation");
 
@@ -98,6 +99,9 @@ let text3 = new Two.Text(``, 500, 210, {
   family: "Libre Franklin",
   alignment: "left"
 });
+// let infoBox = makeBox(new Two.Vector(500, 300), 200, "info");
+// infoBox.setText(`This is a visualization of the @nyt_first_said pipeline.`);
+
 let group = two.makeGroup(text1, text2, text3);
 
 function startUp(setback) {

@@ -151,6 +151,10 @@ function makeBox(pos, size: number, id: string) {
   two.update();
 
   let r = 25;
+  if (id == "e") {
+    r = 0;
+  }
+
   let contentId = "content" + id;
   const htmlString = ReactDOMServer.renderToStaticMarkup(
     <React.Fragment>
