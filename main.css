@@ -52,11 +52,27 @@ h1 {
   bottom: 5;
   display: flex;
 }
+#article-link {
+  position: absolute;
+  top: 5px;
+  left: 25px;
+  font-size: 15px;
+  font-weight: 100;
+  font-family: "Libre Franklin";
+}
+#info {
+  font-family: "Libre Franklin";
+  font-size: 25px;
+
+  /* font-style: italic; */
+}
 .credit {
   position: fixed;
-  right: 0;
+  right: 2px;
   bottom: 0;
   z-index: 500;
+  font-weight: 100;
+
   text-shadow: white 0px 1px;
 }
 :root {

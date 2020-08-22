@@ -7,7 +7,7 @@ import { processTDV } from "./src/process";
 import { Vector } from "matter-js";
 
 let elem = document.getElementById("draw-animation");
-
+let articleLink = document.getElementById("article-link");
 let width = window.innerWidth;
 let height = window.innerHeight;
 window.width = width;
@@ -18,7 +18,7 @@ two.renderer.domElement.setAttribute("viewBox", "-0 -0 1000 1050");
 
 window.two = two;
 
-let pHopper = new Two.Vector(200, 200);
+let pHopper = new Two.Vector(200, 220);
 let pClean = new Two.Vector(200, 750);
 let pRule = new Two.Vector(500, 750);
 let pCheck = new Two.Vector(800, 750);
@@ -28,7 +28,7 @@ let pTrash2 = new Two.Vector(0, 905);
 let pTrash3 = new Two.Vector(0, 940);
 let pGradient = new Two.Vector(0, 905);
 
-let c1 = makeConnector(new Two.Vector(200, 400), pClean, "1", true, "wiggle");
+let c1 = makeConnector(new Two.Vector(200, 420), pClean, "1", true, "wiggle");
 let c2 = makeConnector(pClean, pRule, "2", false, "l");
 let c3 = makeConnector(pRule, pCheck, "3", false, "loop");
 let c4 = makeConnector(pCheck, pDestination, "4");
@@ -45,7 +45,7 @@ boxClean.setText("Clean & Trim Punctu-ation");
 let boxRule = makeBox(pRule, 100, "c");
 boxRule.setText("Not Capitalized?");
 let boxCheck = makeBox(pCheck, 100, "d");
-boxCheck.setText("Seen before in Archives?");
+boxCheck.setText("Doesn't occur in Archives?");
 
 let boxDestination = makeBox(new Two.Vector(900, 350), 150, "e");
 // let connections = [c1, c2];
@@ -80,25 +80,26 @@ function subtract(a, b) {
   });
   return out;
 }
-let text1 = new Two.Text("", 490, 70, {
+let text1 = new Two.Text("", 410, 110, {
   size: 105,
   weight: 100,
   family: "Libre Franklin",
   alignment: "left"
 });
 
-let text2 = new Two.Text(`loading...         `, 500, 160, {
+let text2 = new Two.Text(`loading...         `, 415, 190, {
   size: 60,
   weight: 100,
   family: "Libre Franklin",
   alignment: "left"
 });
-let text3 = new Two.Text(``, 500, 210, {
+let text3 = new Two.Text(``, 415, 240, {
   size: 30,
   weight: 100,
   family: "Libre Franklin",
   alignment: "left"
 });
+
 // let infoBox = makeBox(new Two.Vector(500, 300), 200, "info");
 // infoBox.setText(`This is a visualization of the @nyt_first_said pipeline.`);
 
@@ -125,11 +126,13 @@ function startUp(setback) {
   let wordTotal = 0;
   function moveWord(): Promise<any> {
     text2.value = `article ${article_i + 1}/${article_i + 1 + articles.length}`;
-    text3.value = `words processed ${wordCount.toLocaleString()} / ${wordTotal.toLocaleString()}`;
+    text3.value = `word ${wordCount.toLocaleString()} / ${wordTotal.toLocaleString()}`;
     two.update();
     wordCount++;
     if (wordList.length == 0) {
       wordList = articles.shift();
+      articleLink.href = wordList.url;
+      articleLink.innerText = wordList.url;
       article_i++;
       console.log("processing article " + articles);
     }
@@ -189,7 +192,8 @@ function startUp(setback) {
       wordTotal = articles.reduce((acc, b) => b.length + acc, 0);
 
       wordList = articles.shift();
-
+      articleLink.href = wordList.url;
+      articleLink.innerText = wordList.url;
       // articles = articles.sort((a, b) => a.length - b.length);
       console.log(articles);
 
