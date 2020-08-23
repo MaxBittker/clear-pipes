@@ -5,9 +5,9 @@ import { makeConnector, makeBox, makeGradient, makeHopper } from "./src/render";
 import { startPhysics } from "./src/physics";
 import { processTDV } from "./src/process";
 import { Vector } from "matter-js";
+import { subtract } from "./src/utils";
 
 let elem = document.getElementById("draw-animation");
-let articleLink = document.getElementById("article-link");
 let width = window.innerWidth;
 let height = window.innerHeight;
 window.width = width;
@@ -21,21 +21,25 @@ window.two = two;
 let pHopper = new Two.Vector(200, 220);
 let pClean = new Two.Vector(200, 750);
 let pRule = new Two.Vector(500, 750);
+// let pCache = new Two.Vector(600, 750);
 let pCheck = new Two.Vector(800, 750);
 let pDestination = new Two.Vector(950, 350);
 let pTrash = new Two.Vector(0, 870);
 let pTrash2 = new Two.Vector(0, 905);
 let pTrash3 = new Two.Vector(0, 940);
+// let pTrash4 = new Two.Vector(0,  975);
 let pGradient = new Two.Vector(0, 905);
 
 let c1 = makeConnector(new Two.Vector(200, 420), pClean, "1", true, "wiggle");
 let c2 = makeConnector(pClean, pRule, "2", false, "l");
+// let c3 = makeConnector(pRule, pCache, "3", false, "l");
 let c3 = makeConnector(pRule, pCheck, "3", false, "loop");
 let c4 = makeConnector(pCheck, pDestination, "4");
 
 let cTrash1 = makeConnector(pClean, pTrash, "t1", true);
 let cTrash2 = makeConnector(pRule, pTrash2, "t2", true);
-let cTrash3 = makeConnector(pCheck, pTrash3, "t3", true);
+// let cTrash3 = makeConnector(pCache, pTrash3, "t3", true);
+let cTrash3 = makeConnector(pCheck, pTrash3, "t4", true);
 let trashGradient = makeGradient(pGradient.x, pGradient.y, 200);
 // let c7 = makeConnector(pCheck, pTrash, "5", true);
 
@@ -44,10 +48,14 @@ let boxClean = makeBox(pClean, 100, "b");
 boxClean.setText("Clean & Trim Punctu-ation");
 let boxRule = makeBox(pRule, 100, "c");
 boxRule.setText("Not Capitalized?");
+
+// let boxCache = makeBox(pCache, 100, "d");
+// boxCache.setText("Not Seen by us?");
+
 let boxCheck = makeBox(pCheck, 100, "d");
 boxCheck.setText("Doesn't occur in Archives?");
 
-let boxDestination = makeBox(new Two.Vector(900, 350), 150, "e");
+let boxDestination = makeBox(new Two.Vector(900, 350), 150, "f");
 // let connections = [c1, c2];
 
 let { addWord, removeWord, setGravity } = startPhysics(boxHopper);
@@ -63,23 +71,6 @@ function formatWords(words: Array<string>) {
 let destinationWords: Array<string> = ["Tweeted:"];
 boxDestination.setText(formatWords(destinationWords));
 
-function remove_first_occurrence(str, searchstr) {
-  let index = str.indexOf(searchstr);
-  if (index === -1) {
-    return str;
-  }
-  return str.slice(0, index) + str.slice(index + searchstr.length);
-}
-
-function subtract(a, b) {
-  let letters = b.split("");
-  let out = a;
-
-  letters.forEach(l => {
-    out = remove_first_occurrence(out, l);
-  });
-  return out;
-}
 let text1 = new Two.Text("", 410, 110, {
   size: 105,
   weight: 100,
@@ -87,7 +78,7 @@ let text1 = new Two.Text("", 410, 110, {
   alignment: "left"
 });
 
-let text2 = new Two.Text(`loading...         `, 415, 190, {
+let text2 = new Two.Text(`Loading...         `, 415, 190, {
   size: 60,
   weight: 100,
   family: "Libre Franklin",
@@ -104,6 +95,24 @@ let text3 = new Two.Text(``, 415, 240, {
 // infoBox.setText(`This is a visualization of the @nyt_first_said pipeline.`);
 
 let group = two.makeGroup(text1, text2, text3);
+let group2 = two.makeGroup();
+two.update();
+let svgElem = group2._renderer.elem;
+svgElem.innerHTML += `<a id="article-link"   >
+<text x="25" y="35">
+ Loading...
+</text>
+</a>`;
+
+function updateArticleLink(url) {
+  let articleLink = document.getElementById("article-link");
+  articleLink.remove();
+  svgElem.innerHTML += `<a id="article-link" target="_blank" href="${url}">
+  <text x="25" y="35">
+   ${url}
+  </text>
+  </a>`;
+}
 
 function startUp(setback) {
   let d = new Date();
@@ -119,8 +128,8 @@ function startUp(setback) {
   let date = `${mo}-${da}-${ye}`;
   text1.value = `${mo} ${da}`;
 
-  let wordList = [];
-  let articles = [];
+  let wordList: string[] = [];
+  let articles: string[][] = [];
   let article_i = 0;
   let wordCount = 0;
   let wordTotal = 0;
@@ -131,8 +140,7 @@ function startUp(setback) {
     wordCount++;
     if (wordList.length == 0) {
       wordList = articles.shift();
-      articleLink.href = wordList.url;
-      articleLink.innerText = wordList.url;
+      updateArticleLink(wordList.url);
       article_i++;
       console.log("processing article " + articles);
     }
@@ -192,8 +200,7 @@ function startUp(setback) {
       wordTotal = articles.reduce((acc, b) => b.length + acc, 0);
 
       wordList = articles.shift();
-      articleLink.href = wordList.url;
-      articleLink.innerText = wordList.url;
+      updateArticleLink(wordList.url);
       // articles = articles.sort((a, b) => a.length - b.length);
       console.log(articles);
 
@@ -205,7 +212,7 @@ function startUp(setback) {
       window.setTimeout(moveWord, 1400);
     });
 
-  two.bind("update", function(frameCount) {}).play(); // Finally, start the animation loop
+  two.bind("update", function() {}).play(); // Finally, start the animation loop
 }
 startUp(0);
 

@@ -53,9 +53,6 @@ h1 {
   display: flex;
 }
 #article-link {
-  position: absolute;
-  top: 5px;
-  left: 25px;
   font-size: 15px;
   font-weight: 100;
   font-family: "Libre Franklin";

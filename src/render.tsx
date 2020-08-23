@@ -145,6 +145,8 @@ function makeBox(pos, size: number, id: string) {
 
   path.fill = "lavender";
   rect1.fill = "white";
+  // rect1.fill = "transparent";
+  // path.fill = "transparent";
   let group2 = two.makeGroup(path);
 
   let group = two.makeGroup(rect1, line);
@@ -391,7 +393,7 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
 
   let p_i = 0;
   return {
-    sendWord(word: string, clear: Function): Promise<unknown> {
+    sendWord(word: string, clear?: Function): Promise<unknown> {
       if (rotate > 0) {
         word = word
           .split("")
@@ -415,7 +417,7 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
             throw new Error("no path");
           }
 
-          if (cb && offset > word.length * 10 + 100) {
+          if (cb && offset > word.length * 10 + 10) {
             cb();
             cb = null;
           }
