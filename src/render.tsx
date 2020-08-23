@@ -417,7 +417,7 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
             throw new Error("no path");
           }
 
-          if (cb && offset > word.length * 10 + 10) {
+          if (cb && offset > word.length * 11 + 40) {
             cb();
             cb = null;
           }

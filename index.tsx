@@ -45,15 +45,15 @@ let trashGradient = makeGradient(pGradient.x, pGradient.y, 200);
 
 let boxHopper = makeHopper(pHopper, 350, "a");
 let boxClean = makeBox(pClean, 100, "b");
-boxClean.setText("Clean & Trim Punctu-ation");
+boxClean.setText("Trim Punctuation");
 let boxRule = makeBox(pRule, 100, "c");
-boxRule.setText("Not Capitalized?");
+boxRule.setText("Capitalized?");
 
 // let boxCache = makeBox(pCache, 100, "d");
 // boxCache.setText("Not Seen by us?");
 
 let boxCheck = makeBox(pCheck, 100, "d");
-boxCheck.setText("Doesn't occur in Archives?");
+boxCheck.setText("Seen Before in Archives?");
 
 let boxDestination = makeBox(new Two.Vector(900, 350), 150, "f");
 // let connections = [c1, c2];
@@ -224,6 +224,6 @@ document.getElementById("speed").addEventListener("change", e => {
 
   document.documentElement.style.setProperty(
     "--spin-duration",
-    2000 / n + "ms"
+    5000 / n + "ms"
   );
 });
