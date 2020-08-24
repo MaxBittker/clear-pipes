@@ -71,9 +71,7 @@ boxCheck.setText("Exists in NYT Archives?");
 let boxDestination = makeBox(new Two.Vector(900, 350), 150, "f");
 
 function formatWords(words: Array<string>) {
-  return `<p class="word-bank">${words
-    .map(w => `<span class="word-span">${w}</span>&nbsp;`)
-    .join(" ")}</p>`;
+  return `<p >${words.map(w => `<span >${w}</span>&nbsp;`).join(" ")}</p>`;
 }
 
 let destinationWords: Array<string> = ["Tweeted:"];
@@ -111,7 +109,7 @@ infoBox.setText(`
 
 <p> The most important check is against the New York Time's archive search service. The archive goes back to 1851 and contains more than 13 million articles. </p>
 
-<p>The paper publishes many thousands of words each day, but only a very few are firsts!<p> 
+<p>The paper publishes many thousands of words each day, but only a very few are firsts.<p> 
 
 <a href="https://maxbittker.github.io/nyt-first-said/"> more information</a>
 `);
