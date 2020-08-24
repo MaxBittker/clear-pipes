@@ -69,11 +69,6 @@ let boxCheck = makeBox(pCheck, 100, "d");
 boxCheck.setText("Exists in NYT Archives?");
 
 let boxDestination = makeBox(new Two.Vector(900, 350), 150, "f");
-// let connections = [c1, c2];
-
-let { addWord, removeWord, setGravity } = startPhysics(boxHopper);
-
-// words.slice(0, 65).map(addWord);
 
 function formatWords(words: Array<string>) {
   return `<p class="word-bank">${words
@@ -83,6 +78,8 @@ function formatWords(words: Array<string>) {
 
 let destinationWords: Array<string> = ["Tweeted:"];
 boxDestination.setText(formatWords(destinationWords));
+
+let { addWord, removeWord, setGravity } = startPhysics(boxHopper);
 
 let text1 = new Two.Text("", 410, 110, {
   size: 105,
