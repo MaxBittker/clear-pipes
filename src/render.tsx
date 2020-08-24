@@ -325,7 +325,7 @@ function makeConnector(
   let flourishPath = "";
   if (flourish == "wiggle") {
     flourishPath = `
-    l 0 110
+    l 0 125
               
     a 25 25, 0, 0, 1, -25, 25
     l -75 0

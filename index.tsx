@@ -25,16 +25,16 @@ two.renderer.domElement.setAttribute("viewBox", "-0 -0 1000 1050");
 window.two = two;
 
 let pHopper = new Two.Vector(200, 220);
-let pClean = new Two.Vector(200, 750);
-let pRule = new Two.Vector(500, 750);
+let pClean = new Two.Vector(200, 30 + 750);
+let pRule = new Two.Vector(500, 30 + 750);
 // let pCache = new Two.Vector(600, 750);
-let pCheck = new Two.Vector(800, 750);
+let pCheck = new Two.Vector(800, 30 + 750);
 let pDestination = new Two.Vector(950, 350);
-let pTrash = new Two.Vector(0, 870);
-let pTrash2 = new Two.Vector(0, 905);
-let pTrash3 = new Two.Vector(0, 940);
+let pTrash = new Two.Vector(0, 30 + 870);
+let pTrash2 = new Two.Vector(0, 30 + 905);
+let pTrash3 = new Two.Vector(0, 30 + 940);
 // let pTrash4 = new Two.Vector(0,  975);
-let pGradient = new Two.Vector(0, 905);
+let pGradient = new Two.Vector(0, 30 + 905);
 
 let c1 = makeConnector(
   new Two.Vector(200, 420),
