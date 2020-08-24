@@ -109,7 +109,7 @@ infoBox.setText(`
 
 <p>Each word then must pass several criteria. Containing a number or special character is criteria for disqualification. To avoid proper nouns, all capitalized words are filtered.<p>
 
-<p> The most important check is against the New York Time's archive search service. The archive goes back to 1851 and contains more that 13 million articles. </p>
+<p> The most important check is against the New York Time's archive search service. The archive goes back to 1851 and contains more than 13 million articles. </p>
 
 <p>The paper publishes many thousands of words each day, but only a very few are firsts!<p> 
 
@@ -244,7 +244,7 @@ document.getElementById("speed").addEventListener("change", e => {
   let n = parseInt(e.target.value, 10);
 
   console.log(n);
-  setGravity(1 + n / 30);
+  setGravity(1 + n / 20);
 
   document.documentElement.style.setProperty(
     "--spin-duration",

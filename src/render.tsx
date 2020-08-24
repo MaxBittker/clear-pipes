@@ -300,7 +300,7 @@ function makeConnector(
     ry *= -1;
     sweep = 1 - sweep;
   }
-  let length = Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+  // let length = Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
 
   let pM = new Two.Vector(p2.x, p1.y);
   let xFirst = 1;
@@ -312,14 +312,6 @@ function makeConnector(
     xFirst = 0;
     yFirst = 1;
     sweep = 1 - sweep;
-  }
-
-  let word = "gobshite";
-  if (rotate > 0) {
-    word = word
-      .split("")
-      .reverse()
-      .join("");
   }
 
   let flourishPath = "";
