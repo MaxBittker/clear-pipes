@@ -26,17 +26,19 @@ function makeHopper(pos, size: number, id: string) {
   ];
   let body1 = two.makePath(verts, true);
   let body2 = two.makePath(verts2, true);
-  let line = two.makeLine(
-    size / 2,
-    size * 1.25,
-    size / 2 + 10,
-    size * 1.25 + 10
-  );
+  // let line = two.makeLine(
+  //   size / 2,
+  //   size * 1.25,
+  //   size / 2 + 10,
+  //   size * 1.25 + 10
+  // );
   let line2 = two.makeLine(size, size, size + 10, size + 10);
 
   body1.fill = "white";
   body2.fill = "lavender";
 
+  // body1.fill = "transparent";
+  // body2.fill = "transparent";
   let groupBackground = two.makeGroup(body2);
   let group = two.makeGroup(body1, line2);
 
@@ -272,7 +274,14 @@ function makePath(a, b) {
   two.makeLine(mid.x, mid.y, b.x, b.y);
 }
 
-function makeConnector(p1, p2, id, flip = false, flourish = "") {
+function makeConnector(
+  p1,
+  p2,
+  id,
+  flip = false,
+  flourish = "",
+  proportional_space = false
+) {
   let two = window.two;
   // let path = makePath(p1, p2);
 
@@ -410,14 +419,16 @@ function makeConnector(p1, p2, id, flip = false, flourish = "") {
       }
       let cb = clear;
       const animationProgress = new Promise((resolve, reject) => {
-        let offset = word.length * -10;
+        let space = proportional_space ? word.length * 12 : 80;
+
+        let offset = -space;
 
         let updateOffset = () => {
           if (!textPath) {
             throw new Error("no path");
           }
 
-          if (cb && offset > word.length * 11 + 40) {
+          if (cb && offset > space) {
             cb();
             cb = null;
           }
@@ -459,4 +470,52 @@ function makeGradient(x, y, size) {
   rectangle.fill = linearGradient;
 }
 
-export { makeConnector, makeBox, makeHopper, makeGradient };
+function makeInfoBox(pos, size: number, id: string) {
+  let two = window.two;
+  let rect1 = two.makeRectangle(size / 2, size / 2.25, size, size);
+
+  rect1.stroke = "rgba(0,0,0,0.0)";
+  rect1.fill = "white";
+  rect1.fill = "rgba(255,255,255,.6)";
+
+  let group = two.makeGroup(rect1);
+  two.update();
+
+  let contentId = "content" + id;
+  const htmlString2 = ReactDOMServer.renderToStaticMarkup(
+    <React.Fragment>
+      <svg
+        width={size}
+        height={size}
+        x={0}
+        y={0}
+        viewBox={`${-size} ${-size} ${size * 2} ${size * 2}`}
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+      ></svg>
+
+      <foreignobject x="0" y="0" width={size} height={size}>
+        <div id={contentId}>{/* <h1>{id}</h1> */}</div>
+      </foreignobject>
+    </React.Fragment>
+  );
+  let svgElem = group._renderer.elem;
+  svgElem.innerHTML += htmlString2;
+
+  group.translation.set(pos.x - size / 2, pos.y - size / 2);
+  return {
+    setText(word) {
+      let newHTML = `
+        
+        <div id="${contentId}" class="boxText infoBox">
+         ${word}
+        </div>
+        `;
+      let htmlContent = document.getElementById(contentId);
+
+      morph(htmlContent, newHTML);
+    }
+  };
+}
+
+export { makeConnector, makeBox, makeHopper, makeInfoBox, makeGradient };

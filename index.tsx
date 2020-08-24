@@ -1,7 +1,13 @@
 import Two from "two.js";
 import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
-import { makeConnector, makeBox, makeGradient, makeHopper } from "./src/render";
+import {
+  makeConnector,
+  makeBox,
+  makeInfoBox,
+  makeGradient,
+  makeHopper
+} from "./src/render";
 import { startPhysics } from "./src/physics";
 import { processTDV } from "./src/process";
 import { Vector } from "matter-js";
@@ -30,7 +36,14 @@ let pTrash3 = new Two.Vector(0, 940);
 // let pTrash4 = new Two.Vector(0,  975);
 let pGradient = new Two.Vector(0, 905);
 
-let c1 = makeConnector(new Two.Vector(200, 420), pClean, "1", true, "wiggle");
+let c1 = makeConnector(
+  new Two.Vector(200, 420),
+  pClean,
+  "1",
+  true,
+  "wiggle",
+  true
+);
 let c2 = makeConnector(pClean, pRule, "2", false, "l");
 // let c3 = makeConnector(pRule, pCache, "3", false, "l");
 let c3 = makeConnector(pRule, pCheck, "3", false, "loop");
@@ -53,7 +66,7 @@ boxRule.setText("Capitalized?");
 // boxCache.setText("Not Seen by us?");
 
 let boxCheck = makeBox(pCheck, 100, "d");
-boxCheck.setText("Seen Before in Archives?");
+boxCheck.setText("Exists in NYT Archives?");
 
 let boxDestination = makeBox(new Two.Vector(900, 350), 150, "f");
 // let connections = [c1, c2];
@@ -91,8 +104,20 @@ let text3 = new Two.Text(``, 415, 240, {
   alignment: "left"
 });
 
-// let infoBox = makeBox(new Two.Vector(500, 300), 200, "info");
-// infoBox.setText(`This is a visualization of the @nyt_first_said pipeline.`);
+let infoBox = makeInfoBox(new Two.Vector(615, 470), 410, "info");
+infoBox.setText(`
+<p>This is a visualization of the process behind <a href="https://twitter.com/NYT_first_said"> @nyt_first_said</a>.</p>
+
+<p>Each day, a script scrapes new articles from nytimes.com. That text is <i>tokenized</i>, or split into words based on whitespace and punctuation. </p>
+
+<p>Each word then must pass several criteria. Containing a number or special character is criteria for disqualification. To avoid proper nouns, all capitalized words are filtered.<p>
+
+<p> The most important check is against the New York Time's archive search service. The archive goes back to 1851 and contains more that 13 million articles. </p>
+
+<p>The paper publishes many thousands of words each day, but only a very few are firsts!<p> 
+
+<a href="https://maxbittker.github.io/nyt-first-said/"> more information</a>
+`);
 
 let group = two.makeGroup(text1, text2, text3);
 let group2 = two.makeGroup();
@@ -151,9 +176,11 @@ function startUp(setback) {
     let [initial, cleaned, passed, count, api_checked] = removeWord();
 
     // boxHopper.setText(formatWords(words));
-
+    let speed = parseInt(document.getElementById("speed").value, 10);
     return c1
-      .sendWord(initial, moveWord)
+      .sendWord(initial, () =>
+        setTimeout(moveWord, (30 + word.length * 12) / speed)
+      )
       .then(() => {
         // moveWord();
         if (initial.match(`[\@\/\#\_\-]`)) {

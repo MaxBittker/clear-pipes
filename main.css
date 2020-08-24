@@ -102,6 +102,12 @@ foreignObject > div {
 .boxText {
   padding: 5px;
 }
+.infoBox {
+  font-size: 18px;
+}
+.infoBox p {
+  margin-bottom: 9px;
+}
 .word-bank {
   /* text-align: justify; */
   padding: 10px 0px 10px 10px;
