@@ -395,7 +395,11 @@ function makeConnector(
   let p_i = 0;
   return {
     sendWord(word: string, clear?: Function): Promise<unknown> {
-      if (rotate > 0) {
+      var isSafari =
+        /Safari/.test(navigator.userAgent) &&
+        /Apple Computer/.test(navigator.vendor);
+
+      if (rotate > 0 && !isSafari) {
         word = word
           .split("")
           .reverse()
