@@ -6,7 +6,7 @@ import {
   makeBox,
   makeInfoBox,
   makeGradient,
-  makeHopper
+  makeHopper,
 } from "./src/render";
 import { startPhysics } from "./src/physics";
 import { processTDV } from "./src/process";
@@ -71,7 +71,7 @@ boxCheck.setText("Exists in NYT Archives?");
 let boxDestination = makeBox(new Two.Vector(900, 350), 150, "f");
 
 function formatWords(words: Array<string>) {
-  return `<p >${words.map(w => `<span >${w}</span>&nbsp;`).join(" ")}</p>`;
+  return `<p >${words.map((w) => `<span >${w}</span>&nbsp;`).join(" ")}</p>`;
 }
 
 let destinationWords: Array<string> = ["Tweeted:"];
@@ -83,20 +83,20 @@ let text1 = new Two.Text("", 410, 110, {
   size: 105,
   weight: 100,
   family: "Libre Franklin",
-  alignment: "left"
+  alignment: "left",
 });
 
 let text2 = new Two.Text(`Loading...         `, 415, 190, {
   size: 60,
   weight: 100,
   family: "Libre Franklin",
-  alignment: "left"
+  alignment: "left",
 });
 let text3 = new Two.Text(``, 415, 240, {
   size: 30,
   weight: 100,
   family: "Libre Franklin",
-  alignment: "left"
+  alignment: "left",
 });
 
 let infoBox = makeInfoBox(new Two.Vector(615, 470), 410, "info");
@@ -210,8 +210,8 @@ function startUp(setback) {
   two.update();
   let url = `https://api.shaderbooth.com:3002/static/records/${date}.txt`;
   fetch(url)
-    .then(response => response.text())
-    .then(blob => {
+    .then((response) => response.text())
+    .then((blob) => {
       if (blob.length == 0) {
         startUp(-12);
         return;
@@ -232,13 +232,17 @@ function startUp(setback) {
       }
 
       window.setTimeout(moveWord, 1400);
+    })
+    .catch((e) => {
+      startUp(-12);
+      return;
     });
 
-  two.bind("update", function() {}).play(); // Finally, start the animation loop
+  two.bind("update", function () {}).play(); // Finally, start the animation loop
 }
 startUp(0);
 
-document.getElementById("speed").addEventListener("change", e => {
+document.getElementById("speed").addEventListener("change", (e) => {
   let n = parseInt(e.target.value, 10);
 
   console.log(n);
