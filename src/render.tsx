@@ -13,7 +13,7 @@ function makeHopper(pos, size: number, id: string) {
     new Two.Anchor(size / 2 + 15, size * 1.23),
     new Two.Anchor(size / 2 - 15, size * 1.23),
     new Two.Anchor(0, size),
-    new Two.Anchor(0, 0)
+    new Two.Anchor(0, 0),
   ];
   let verts2 = [
     new Two.Anchor(size, 0),
@@ -22,7 +22,7 @@ function makeHopper(pos, size: number, id: string) {
     new Two.Anchor(size + 10, size + 10),
     new Two.Anchor(size / 2 + 10, size * 1.25 + 10),
     new Two.Anchor(10, size + 10),
-    new Two.Anchor(0, size)
+    new Two.Anchor(0, size),
   ];
   let body1 = two.makePath(verts, true);
   let body2 = two.makePath(verts2, true);
@@ -128,7 +128,7 @@ function makeHopper(pos, size: number, id: string) {
 
       morph(htmlContent, newHTML);
       //   htmlContent.innerHTML = word;
-    }
+    },
   };
 }
 
@@ -140,7 +140,7 @@ function makeBox(pos, size: number, id: string) {
     new Two.Anchor(size + 10, 10),
     new Two.Anchor(size + 10, size + 10),
     new Two.Anchor(10, size + 10),
-    new Two.Anchor(0, size)
+    new Two.Anchor(0, size),
   ];
   let path = two.makePath(verts, true);
   let line = two.makeLine(size, size, size + 10, size + 10);
@@ -264,7 +264,7 @@ function makeBox(pos, size: number, id: string) {
 
       morph(htmlContent, newHTML);
       //   htmlContent.innerHTML = word;
-    }
+    },
   };
 }
 
@@ -348,8 +348,9 @@ function makeConnector(
     (x, i) => "textpath" + id + i.toString()
   );
 
-  let A = `A 45, 45, 0, 0, ${sweep}, ${pM.x - rx * yFirst} ${pM.y -
-    ry * xFirst}`;
+  let A = `A 45, 45, 0, 0, ${sweep}, ${pM.x - rx * yFirst} ${
+    pM.y - ry * xFirst
+  }`;
   if (flourish != "") {
     A = "";
   }
@@ -367,20 +368,20 @@ function makeConnector(
         fill="transparent"
       />
 
-      <text width="100%" rotate={rotate}>
-        {pathIds.map(pid => {
-          return (
-            <textpath
+      {pathIds.map((pid) => {
+        return (
+          <text width="100%" rotate={rotate}>
+            <textPath
               href={"#" + id}
               startOffset="00px"
               id={pid}
               className="pipetext"
               key={pid}
               alignmentBaseline="middle"
-            ></textpath>
-          );
-        })}
-      </text>
+            ></textPath>
+          </text>
+        );
+      })}
     </React.Fragment>
   );
   let svgElem = group._renderer.elem;
@@ -390,7 +391,7 @@ function makeConnector(
   let path: SVGPathElement = document.getElementById(id);
   let pathLength = path.getTotalLength();
 
-  let textPaths = pathIds.map(pid => document.getElementById(pid));
+  let textPaths = pathIds.map((pid) => document.getElementById(pid));
 
   let p_i = 0;
   return {
@@ -400,10 +401,7 @@ function makeConnector(
         /Apple Computer/.test(navigator.vendor);
 
       if (rotate > 0 && !isSafari) {
-        word = word
-          .split("")
-          .reverse()
-          .join("");
+        word = word.split("").reverse().join("");
       }
       let textPath = textPaths[p_i];
 
@@ -441,7 +439,7 @@ function makeConnector(
       });
 
       return animationProgress;
-    }
+    },
   };
 }
 function makeGradient(x, y, size) {
@@ -510,7 +508,7 @@ function makeInfoBox(pos, size: number, id: string) {
       let htmlContent = document.getElementById(contentId);
 
       morph(htmlContent, newHTML);
-    }
+    },
   };
 }
 
