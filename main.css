@@ -28,11 +28,11 @@ path {
 }
 .tube {
   stroke-width: 30px;
-  stroke: rgba(0, 0, 200, 0.05);
+  stroke: rgb(244 244 252);
   /* stroke-dasharray: 20px 10px; */
 }
 .trash {
-  stroke: rgba(150, 0, 30, 0.1);
+  stroke: rgb(245 232 235);
 }
 textPath {
   /* font-size: 0.4em; */
